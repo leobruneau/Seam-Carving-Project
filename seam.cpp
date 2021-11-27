@@ -1,21 +1,70 @@
+#include <iostream>
 #include <cassert>
 #include <limits>
 #include <tgmath.h>
+#include <cmath>
 #include <vector>
-
 #include "seam.h"
-
-using namespace std;
 
 // ***********************************
 // TASK 1: COLOR
 // ***********************************
 
+int digit_counter(const int& num) {
+  // function to count the number of digits in an integer that will be used
+  // in the function to convert from binary to decimal
+  bool flag(true);
+  int digits(0), i(1);
+  while(flag) {
+    if(num/pow(10, i) < 1) {
+      digits = i;
+      flag = false;
+    } else {
+      ++i;
+    }
+  }
+  return digits;
+}
+// Added function to convert from binary to decimal
+int binary_to_decimal(const int& bin) {
+  int temp(0), decimal(0);
+  int digits = digit_counter(bin);
+  for(int i(0); i < digits; ++i) {
+    temp = bin >> i;
+    if((temp & 0b1) == 1) {
+      decimal += pow(2, i);
+    }
+  }
+  return decimal;
+}
+
+int decimal_to_binary(const int& dec) { // NOT FINISHED!!
+  int bin(0), copy(dec), remainder(0);
+  do {
+    remainder = copy % 2;
+    if(remainder == 1) {
+      copy = (copy - 1)/2;
+      bin = bin*10 + 1;
+    } else {
+      copy = copy/2;
+      bin *= 10;
+    }
+    if(copy == 1) {
+      bin = bin*10 + 1;
+    }
+  } while(copy != 0);
+  return bin;
+}
+
 // Returns red component (in the scale 0.0-1.0) from given RGB color.
 double get_red(int rgb)
 {
-    // okay now here i have to write the body of my function otherwise i will fail
-    return 0.; // TODO MODIFY AND COMPLETE
+    double red_component(.0);
+    int r = rgb >> 16;
+    r = r & 0b11111111;
+    // to be completed ...
+    red_component = binary_to_decimal(r)/255.0;
+    return red_component;
 }
 
 // Returns green component (in the scale 0.0-1.0) from given RGB color.

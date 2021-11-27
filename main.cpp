@@ -23,7 +23,7 @@ void test_remove_seam(std::string const& in_path, int num);
 
 int main(int argc, char **argv)
 {
-    run_unit_tests();
+    // run_unit_tests();
 
     // Initialize with a default value
     std::string in_path = "img/americascup.jpg";
@@ -38,6 +38,9 @@ int main(int argc, char **argv)
     }
 
     // // Uncomment for testing different phases:
+    std::cout << binary_to_decimal(11000000) << std::endl; //testing the binary_to_decimal function
+    std::cout << decimal_to_binary(192) << std::endl;
+    // std::cout << get_red(0b00000000001000001100000011111111) << std::endl;
     // test_to_gray(in_path);
     // test_smooth(in_path);
     // test_sobel(in_path);
