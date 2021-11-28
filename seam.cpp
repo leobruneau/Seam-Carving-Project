@@ -13,6 +13,9 @@
 int digit_counter(const int& num) {
   // function to count the number of digits in an integer that will be used
   // in the function to convert from binary to decimal
+  
+  // YEAH YOU PULLED ALRIGHT!
+  
   bool flag(true);
   int digits(0), i(1);
   while(flag) {
