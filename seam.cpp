@@ -13,9 +13,6 @@
 int digit_counter(const int& num) {
   // function to count the number of digits in an integer that will be used
   // in the function to convert from binary to decimal
-  
-  // YEAH YOU PULLED ALRIGHT!
-  
   bool flag(true);
   int digits(0), i(1);
   while(flag) {
@@ -41,22 +38,26 @@ int binary_to_decimal(const int& bin) {
   return decimal;
 }
 
-int decimal_to_binary(const int& dec) { // NOT FINISHED!!
-  int bin(0), copy(dec), remainder(0);
-  do {
-    remainder = copy % 2;
-    if(remainder == 1) {
-      copy = (copy - 1)/2;
-      bin = bin*10 + 1;
-    } else {
-      copy = copy/2;
-      bin *= 10;
+int decimal_to_binary(const int& dec) {
+  int i(0), n(0);
+  int bin = dec;
+  bool flag(true);
+    while(flag) {
+        if(pow(2,i) >= n) {
+        flag = false;
+        } else {
+        ++i;
+        }
     }
-    if(copy == 1) {
-      bin = bin*10 + 1;
+    for(int j(i); j >= 0; --j) {
+        if(pow(2, j) <= n) {
+        bin = bin*10 + 1;
+        n -= pow(2, j);
+        } else {
+        bin *= 10;
+        }
     }
-  } while(copy != 0);
-  return bin;
+    return bin;
 }
 
 // Returns red component (in the scale 0.0-1.0) from given RGB color.
@@ -65,27 +66,36 @@ double get_red(int rgb)
     double red_component(.0);
     int r = rgb >> 16;
     r = r & 0b11111111;
-    // to be completed ...
-    red_component = binary_to_decimal(r)/255.0;
+    red_component = r/255.0;
     return red_component;
 }
 
 // Returns green component (in the scale 0.0-1.0) from given RGB color.
 double get_green(int rgb)
 {
-    return 0.; // TODO MODIFY AND COMPLETE
+    double green_component(.0);
+    int g = rgb >> 8;
+    g = g & 0b11111111;
+    green_component = g/255.0;
+    return green_component;
 }
 
 // Returns blue component (in the scale 0.0-1.0) from given RGB color.
 double get_blue(int rgb)
 {
-    return 0.; // TODO COMPLETE AND MODIFY
+   double blue_component(.0);
+    int b(rgb);
+    b = b & 0b11111111;
+    blue_component = b/255.0;
+    return blue_component;
 }
 
 // Returns the average of red, green and blue components from given RGB color. (Scale: 0.0-1.0)
 double get_gray(int rgb)
 {
-    return 0; // TODO MODIFY AND COMPLETE
+    double grey_component(.0);
+    grey_component = (get_red(rgb) + get_green(rgb) + get_blue(rgb))/3;
+    return grey_component; 
 }
 
 // Returns the RGB value of the given red, green and blue components.
