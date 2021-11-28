@@ -23,7 +23,7 @@ void test_remove_seam(std::string const& in_path, int num);
 
 int main(int argc, char **argv)
 {
-    // run_unit_tests();
+    run_unit_tests();
 
     // Initialize with a default value
     std::string in_path = "img/americascup.jpg";
@@ -40,11 +40,14 @@ int main(int argc, char **argv)
     // // Uncomment for testing different phases:
     // std::cout << binary_to_decimal(11000000) << std::endl; //testing the binary_to_decimal function
     // std::cout << decimal_to_binary(192) << std::endl;
-    std::cout << get_red(0b11111111111111111111111111111111) << std::endl;
-    std::cout << get_green(0b111111111111111111111111111111111) << std::endl;
-    std::cout << get_blue(0b11111111111111111111111111111111) << std::endl;
-    std::cout << get_gray(0b11111111111111111111111111111111) << std::endl;
-    // test_to_gray(in_path);
+    // std::cout << get_red(0b00000000000111001100110001011110) << std::endl;
+    // std::cout << get_green(0b00000000000111001100110001011110) << std::endl;
+    // std::cout << get_blue(0b00000000000111001100110001011110) << std::endl;
+    // std::cout << get_gray(0b00000000000111001100110001011110) << std::endl;
+    // std::cout << 0b000111001100110001011110 << std::endl;
+    // std::cout << get_RGB(get_red(0b000111001100110001011110), get_green(0b000111001100110001011110), get_blue(0b000111001100110001011110)) << std::endl;
+    // std::cout << get_RGB(1.0) << std::endl;
+    test_to_gray(in_path);
     // test_smooth(in_path);
     // test_sobel(in_path);
     // int num_seam(10); /* high value will slow things down */
@@ -59,7 +62,7 @@ void test_to_gray(std::string const& in_path)
     RGBImage image(read_image(in_path));
     if (!image.empty()) {
         GrayImage gray_image(to_gray(image));
-        write_image(to_RGB(gray_image), "test_grayed.png");
+        write_image(to_RGB(gray_image), "outputs/test_grayed.png");
     }
 }
 

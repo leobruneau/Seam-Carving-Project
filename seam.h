@@ -12,8 +12,8 @@
 #include "seam_types.h"
 
 // ADDED FUNCTIONS:
-int digit_counter(const int& num);
-int binary_to_decimal(const int& bin);
+// int digit_counter(const int& num);
+// int binary_to_decimal(const int& bin);
 int decimal_to_binary(const int& dec);
 
 // TASK 1: COLOR

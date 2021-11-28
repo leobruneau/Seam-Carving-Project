@@ -10,33 +10,33 @@
 // TASK 1: COLOR
 // ***********************************
 
-int digit_counter(const int& num) {
-  // function to count the number of digits in an integer that will be used
-  // in the function to convert from binary to decimal
-  bool flag(true);
-  int digits(0), i(1);
-  while(flag) {
-    if(num/pow(10, i) < 1) {
-      digits = i;
-      flag = false;
-    } else {
-      ++i;
-    }
-  }
-  return digits;
-}
-// Added function to convert from binary to decimal
-int binary_to_decimal(const int& bin) {
-  int temp(0), decimal(0);
-  int digits = digit_counter(bin);
-  for(int i(0); i < digits; ++i) {
-    temp = bin >> i;
-    if((temp & 0b1) == 1) {
-      decimal += pow(2, i);
-    }
-  }
-  return decimal;
-}
+// int digit_counter(const int& num) {
+//   // function to count the number of digits in an integer that will be used
+//   // in the function to convert from binary to decimal
+//   bool flag(true);
+//   int digits(0), i(1);
+//   while(flag) {
+//     if(num/pow(10, i) < 1) {
+//       digits = i;
+//       flag = false;
+//     } else {
+//       ++i;
+//     }
+//   }
+//   return digits;
+// }
+// Added function to convert from binary to decimal - which now I see is actually useless
+// int binary_to_decimal(const int& bin) {
+//   int temp(0), decimal(0);
+//   int digits = digit_counter(bin);
+//   for(int i(0); i < digits; ++i) {
+//     temp = bin >> i;
+//     if((temp & 0b1) == 1) {
+//       decimal += pow(2, i);
+//     }
+//   }
+//   return decimal;
+// }
 
 int decimal_to_binary(const int& dec) {
   int i(0), n(0);
@@ -49,7 +49,7 @@ int decimal_to_binary(const int& dec) {
         ++i;
         }
     }
-    for(int j(i); j >= 0; --j) {
+    for(int j(i); j > 0; --j) {
         if(pow(2, j) <= n) {
         bin = bin*10 + 1;
         n -= pow(2, j);
@@ -95,27 +95,43 @@ double get_gray(int rgb)
 {
     double grey_component(.0);
     grey_component = (get_red(rgb) + get_green(rgb) + get_blue(rgb))/3;
-    return grey_component; 
+    return grey_component;
 }
 
 // Returns the RGB value of the given red, green and blue components.
 int get_RGB(double red, double green, double blue)
 {
 
-    return 0; // TODO MODIFY AND COMPLETE
+    int r(red*255), g(green*255), b(blue*255);
+    int rgb(0b00000000);
+    rgb = (rgb << 8) + decimal_to_binary(r);
+    std::cout << rgb << std::endl;
+    rgb = (rgb << 8) + decimal_to_binary(g);
+    std::cout << rgb << std::endl;
+    rgb = (rgb << 8) + decimal_to_binary(b);
+    std::cout << rgb << std::endl;
+    return rgb; // TODO MODIFY AND COMPLETE
 }
 
 // Returns the RGB components from given grayscale value (between 0.0 and 1.0).
 int get_RGB(double gray)
 {
-    return 0; // TODO MODIFY AND COMPLETE
+    int rgb;
+    rgb = get_RGB(gray, gray, gray);
+    return rgb; // TODO MODIFY AND COMPLETE
 }
 
 // Converts  RGB image to grayscale double image.
 GrayImage to_gray(const RGBImage &cimage)
 {
-
-    return {}; // TODO MODIFY AND COMPLETE
+    GrayImage gimage;
+    for(size_t i(0); i < cimage.size(); ++i) {
+        gimage.push_back(std::vector<double> (0));
+        for(size_t j(0); j < (cimage[i]).size(); ++j) {
+            gimage[i].push_back(get_gray(cimage[i][j]));
+        }
+    }
+    return gimage; // TODO MODIFY AND COMPLETE
 }
 
 // Converts grayscale double image to an RGB image.
