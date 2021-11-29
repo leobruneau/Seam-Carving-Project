@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     run_unit_tests();
 
     // Initialize with a default value
-    std::string in_path = "img/americascup.jpg";
+    std::string in_path = "img/webimage.jpg";
     std::string out_path = "test.png";
     if (argc > 1 && argc <= 3) {
         // Change it if the user defined a image path

@@ -5,60 +5,11 @@
 #include <cmath>
 #include <vector>
 #include "seam.h"
+#include "extension.h"
 
 // ***********************************
 // TASK 1: COLOR
 // ***********************************
-
-// int digit_counter(const int& num) {
-//   // function to count the number of digits in an integer that will be used
-//   // in the function to convert from binary to decimal
-//   bool flag(true);
-//   int digits(0), i(1);
-//   while(flag) {
-//     if(num/pow(10, i) < 1) {
-//       digits = i;
-//       flag = false;
-//     } else {
-//       ++i;
-//     }
-//   }
-//   return digits;
-// }
-// Added function to convert from binary to decimal - which now I see is actually useless
-// int binary_to_decimal(const int& bin) {
-//   int temp(0), decimal(0);
-//   int digits = digit_counter(bin);
-//   for(int i(0); i < digits; ++i) {
-//     temp = bin >> i;
-//     if((temp & 0b1) == 1) {
-//       decimal += pow(2, i);
-//     }
-//   }
-//   return decimal;
-// }
-
-int decimal_to_binary(const int& dec) {
-  int i(0), n(0);
-  int bin = dec;
-  bool flag(true);
-    while(flag) {
-        if(pow(2,i) >= n) {
-        flag = false;
-        } else {
-        ++i;
-        }
-    }
-    for(int j(i); j > 0; --j) {
-        if(pow(2, j) <= n) {
-        bin = bin*10 + 1;
-        n -= pow(2, j);
-        } else {
-        bin *= 10;
-        }
-    }
-    return bin;
-}
 
 // Returns red component (in the scale 0.0-1.0) from given RGB color.
 double get_red(int rgb)
@@ -101,16 +52,12 @@ double get_gray(int rgb)
 // Returns the RGB value of the given red, green and blue components.
 int get_RGB(double red, double green, double blue)
 {
-
     int r(red*255), g(green*255), b(blue*255);
     int rgb(0b00000000);
     rgb = (rgb << 8) + decimal_to_binary(r);
-    std::cout << rgb << std::endl;
     rgb = (rgb << 8) + decimal_to_binary(g);
-    std::cout << rgb << std::endl;
     rgb = (rgb << 8) + decimal_to_binary(b);
-    std::cout << rgb << std::endl;
-    return rgb; // TODO MODIFY AND COMPLETE
+    return rgb;
 }
 
 // Returns the RGB components from given grayscale value (between 0.0 and 1.0).
@@ -118,7 +65,7 @@ int get_RGB(double gray)
 {
     int rgb;
     rgb = get_RGB(gray, gray, gray);
-    return rgb; // TODO MODIFY AND COMPLETE
+    return rgb;
 }
 
 // Converts  RGB image to grayscale double image.
@@ -126,19 +73,25 @@ GrayImage to_gray(const RGBImage &cimage)
 {
     GrayImage gimage;
     for(size_t i(0); i < cimage.size(); ++i) {
-        gimage.push_back(std::vector<double> (0));
-        for(size_t j(0); j < (cimage[i]).size(); ++j) {
-            gimage[i].push_back(get_gray(cimage[i][j]));
-        }
+      gimage.push_back(std::vector<double> (0));
+      for(size_t j(0); j < cimage[i].size(); ++j) {
+        gimage[i].push_back(get_gray(cimage[i][j]));
+      }
     }
-    return gimage; // TODO MODIFY AND COMPLETE
+    return gimage;
 }
 
 // Converts grayscale double image to an RGB image.
 RGBImage to_RGB(const GrayImage &gimage)
 {
-
-    return {}; // TODO MODIFY AND COMPLETE
+    RGBImage cimage;
+    for(size_t i(0); i < gimage.size(); ++i) {
+      cimage.push_back(std::vector<int> (0));
+      for(size_t j(0); j < gimage[i].size(); ++j) {
+        cimage[i].push_back(get_RGB(gimage[i][j]));
+      }
+    }
+    return cimage;
 }
 
 // ***********************************

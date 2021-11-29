@@ -55,8 +55,12 @@ void write_image(const RGBImage &image, std::string name)
 {
     std::cout << "Info: writing file " << name << std::endl;
 
+    // std::cerr << "debugging..." << std::endl;
     int height = (int)image.size();
+    // std::cerr << "Debugging: image.size() = " << height << std::endl;
+    // std::cerr << "debugging..." << std::endl;
     int width = (int)image[0].size();
+    // std::cerr << "debugging..." << std::endl;
 
     uint8_t *rgb_image;
     rgb_image = (uint8_t *)malloc(width * height * CHANNEL_NUM);
