@@ -17,6 +17,8 @@
 
 void test_to_gray(std::string const& in_path);
 void test_smooth(std::string const& in_path);
+void test_sobelX(std::string const& in_path);
+void test_sobelY(std::string const& in_path);
 void test_sobel(std::string const& in_path);
 void test_hightlight_seam(std::string const& in_path, int num);
 void test_remove_seam(std::string const& in_path, int num);
@@ -26,7 +28,7 @@ int main(int argc, char **argv)
     run_unit_tests();
 
     // Initialize with a default value
-    std::string in_path = "img/webimage.jpg";
+    std::string in_path = "img/americascup.jpg";
     std::string out_path = "test.png";
     if (argc > 1 && argc <= 3) {
         // Change it if the user defined a image path
@@ -49,7 +51,9 @@ int main(int argc, char **argv)
     // std::cout << get_RGB(1.0) << std::endl;
     test_to_gray(in_path);
     test_smooth(in_path);
-    // test_sobel(in_path);
+    test_sobelX(in_path);
+    test_sobelY(in_path);
+    test_sobel(in_path);
     // int num_seam(10); /* high value will slow things down */
     // test_hightlight_seam(in_path, num_seam);
     //  test_remove_seam(in_path, num_seam);
@@ -75,6 +79,24 @@ void test_smooth(std::string const& in_path)
         write_image(to_RGB(smoothed_image), "outputs/test_smoothed.png");
     }
 };
+
+void test_sobelX(std::string const& in_path) {
+    RGBImage image(read_image(in_path));
+    if (!image.empty()) {
+        GrayImage gray_image(to_gray(image));
+        GrayImage sobelXed(sobelX(gray_image));
+        write_image(to_RGB(sobelXed), "outputs/test_sobelX.png");
+    }
+}
+
+void test_sobelY(std::string const& in_path) {
+    RGBImage image(read_image(in_path));
+    if (!image.empty()) {
+        GrayImage gray_image(to_gray(image));
+        GrayImage sobelYed(sobelY(gray_image));
+        write_image(to_RGB(sobelYed), "outputs/test_sobelY.png");
+    }
+}
 
 void test_sobel(std::string const& in_path)
 {

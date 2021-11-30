@@ -12,8 +12,7 @@
 // ***********************************
 
 // Returns red component (in the scale 0.0-1.0) from given RGB color.
-double get_red(int rgb)
-{
+double get_red(int rgb) {
     double red_component(.0);
     int r = rgb >> 16;
     r = r & 0b11111111;
@@ -22,8 +21,7 @@ double get_red(int rgb)
 }
 
 // Returns green component (in the scale 0.0-1.0) from given RGB color.
-double get_green(int rgb)
-{
+double get_green(int rgb) {
     double green_component(.0);
     int g = rgb >> 8;
     g = g & 0b11111111;
@@ -32,8 +30,7 @@ double get_green(int rgb)
 }
 
 // Returns blue component (in the scale 0.0-1.0) from given RGB color.
-double get_blue(int rgb)
-{
+double get_blue(int rgb) {
    double blue_component(.0);
     int b(rgb);
     b = b & 0b11111111;
@@ -42,16 +39,14 @@ double get_blue(int rgb)
 }
 
 // Returns the average of red, green and blue components from given RGB color. (Scale: 0.0-1.0)
-double get_gray(int rgb)
-{
+double get_gray(int rgb) {
     double grey_component(.0);
     grey_component = (get_red(rgb) + get_green(rgb) + get_blue(rgb))/3;
     return grey_component;
 }
 
 // Returns the RGB value of the given red, green and blue components.
-int get_RGB(double red, double green, double blue)
-{
+int get_RGB(double red, double green, double blue) {
     int r(red*255), g(green*255), b(blue*255);
     int rgb(0b00000000);
     // rgb = (rgb << 8) + decimal_to_binary(r);
@@ -64,16 +59,14 @@ int get_RGB(double red, double green, double blue)
 }
 
 // Returns the RGB components from given grayscale value (between 0.0 and 1.0).
-int get_RGB(double gray)
-{
+int get_RGB(double gray) {
     int rgb;
     rgb = get_RGB(gray, gray, gray);
     return rgb;
 }
 
 // Converts  RGB image to grayscale double image.
-GrayImage to_gray(const RGBImage &cimage)
-{
+GrayImage to_gray(const RGBImage &cimage) {
     GrayImage gimage;
     for(size_t i(0); i < cimage.size(); ++i) {
       gimage.push_back(std::vector<double> (0));
@@ -85,8 +78,7 @@ GrayImage to_gray(const RGBImage &cimage)
 }
 
 // Converts grayscale double image to an RGB image.
-RGBImage to_RGB(const GrayImage &gimage)
-{
+RGBImage to_RGB(const GrayImage &gimage) {
     RGBImage cimage;
     for(size_t i(0); i < gimage.size(); ++i) {
       cimage.push_back(std::vector<int> (0));
@@ -124,51 +116,63 @@ GrayImage filter(const GrayImage &gray, const Kernel &kernel) {
                 }
             }
             filtered[i].push_back(average_pixel);
+            average_pixel = 0; // we forgot to inizialize it back to zero at each new pixel !
         }
     }
-    return filtered; // TODO MODIFY AND COMPLETE
+    return filtered;
 }
 
 // Smooth a single-channel image
 GrayImage smooth(const GrayImage &gray) {
     GrayImage smoothed;
-    Kernel ker { {1/10, 1/10, 1/10},
-                 {1/10, 2/10, 1/10},
-                 {1/10, 1/10, 1/10} };
+    Kernel ker { {0.1,0.1,0.1},
+                 {0.1,0.2,0.1},
+                 {0.1,0.1,0.1} };
     smoothed = filter(gray, ker);
     return smoothed;
 }
 
 // Compute horizontal Sobel filter
-
 GrayImage sobelX(const GrayImage &gray) {
     GrayImage sobelXed;
     Kernel ker { {-1, 0, 1},
                  {-2, 0, 2},
                  {-1, 0, 1} };
-    sobelXed = filter(gray,ker);
+    sobelXed = filter(gray, ker);
     return sobelXed; // TODO MODIFY AND COMPLETE
 }
 
 // Compute vertical Sobel filter
-
-GrayImage sobelY(const GrayImage &gray)
-{
+GrayImage sobelY(const GrayImage &gray) {
     GrayImage sobelYed;
     Kernel ker { {-1, -2, -1},
-                 {0, 0, 0},
-                 {1, 2, 1} };
+                 { 0,  0,  0},
+                 { 1,  2,  1} };
     sobelYed = filter(gray, ker);
     return sobelYed; // TODO MODIFY AND COMPLETE
 }
 
 // Compute the magnitude of combined Sobel filters
-
 GrayImage sobel(const GrayImage &gray) {
-    GrayImage sobeled;
-    sobeled = sobelX(gray);
-    sobeled = sobelY(sobeled);
-    return sobeled; // TODO MODIFY AND COMPLETE
+    GrayImage sobeled, sobelXed, sobelYed;
+    double sobel_pixel(.0);
+    Kernel kerY { {-1, -2, -1},
+                  { 0,  0,  0},
+                  { 1,  2,  1} };
+    Kernel kerX { {-1, 0, 1},
+                  {-2, 0, 2},
+                  {-1, 0, 1} };
+    sobelXed = filter(gray, kerX);
+    sobelYed = filter(gray, kerY);
+    for(size_t i(0); i < gray.size(); ++i) {
+      sobeled.push_back(std::vector<double> (0));
+      for(size_t j(0); j < gray[i].size(); ++j) {
+        sobel_pixel = sqrt(pow(sobelXed[i][j], 2) + pow(sobelYed[i][j], 2));
+        sobeled[i].push_back(sobel_pixel);
+        sobel_pixel = 0;
+      }
+    }
+    return sobeled;
 }
 
 // ************************************
