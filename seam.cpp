@@ -54,9 +54,12 @@ int get_RGB(double red, double green, double blue)
 {
     int r(red*255), g(green*255), b(blue*255);
     int rgb(0b00000000);
-    rgb = (rgb << 8) + decimal_to_binary(r);
-    rgb = (rgb << 8) + decimal_to_binary(g);
-    rgb = (rgb << 8) + decimal_to_binary(b);
+    // rgb = (rgb << 8) + decimal_to_binary(r);
+    rgb = (rgb << 8) + r;
+    // rgb = (rgb << 8) + decimal_to_binary(g);
+    rgb = (rgb << 8) + g;
+    // rgb = (rgb << 8) + decimal_to_binary(b);
+    rgb = (rgb << 8) + b;
     return rgb;
 }
 
@@ -100,42 +103,72 @@ RGBImage to_RGB(const GrayImage &gimage)
 
 // Get a pixel without accessing out of bounds
 // return nearest valid pixel color
-void clamp(long &val, long max)
-{
-    // TODO : COMPLETE
+void clamp(long &val, long max) {
+  if(val < 0) val = 0;
+  if(val >= max) val = max;
 }
 
 // Convolve a single-channel image with the given kernel.
-GrayImage filter(const GrayImage &gray, const Kernel &kernel)
-{
-    return {}; // TODO MODIFY AND COMPLETE
+GrayImage filter(const GrayImage &gray, const Kernel &kernel) {
+    double average_pixel(.0);
+    long val_k(0), val_l(0);
+    GrayImage filtered;
+    for(size_t i(0); i < gray.size(); ++i) {
+        filtered.push_back(std::vector<double> (0));
+        for(size_t j(0); j < gray[i].size(); ++j) {
+            for(size_t k(0); k < kernel.size(); ++k) {
+                for(size_t l(0); l < kernel[k].size(); ++l) {
+                    val_k = i - 1 + k; clamp(val_k, gray.size()-1);
+                    val_l = j - 1 + l; clamp(val_l, gray[i].size()-1);
+                    average_pixel += kernel[k][l]*gray[val_k][val_l];
+                }
+            }
+            filtered[i].push_back(average_pixel);
+        }
+    }
+    return filtered; // TODO MODIFY AND COMPLETE
 }
 
 // Smooth a single-channel image
-GrayImage smooth(const GrayImage &gray)
-{
-    return {}; // TODO MODIFY AND COMPLETE
+GrayImage smooth(const GrayImage &gray) {
+    GrayImage smoothed;
+    Kernel ker { {1/10, 1/10, 1/10},
+                 {1/10, 2/10, 1/10},
+                 {1/10, 1/10, 1/10} };
+    smoothed = filter(gray, ker);
+    return smoothed;
 }
 
 // Compute horizontal Sobel filter
 
-GrayImage sobelX(const GrayImage &gray)
-{
-    return {}; // TODO MODIFY AND COMPLETE
+GrayImage sobelX(const GrayImage &gray) {
+    GrayImage sobelXed;
+    Kernel ker { {-1, 0, 1},
+                 {-2, 0, 2},
+                 {-1, 0, 1} };
+    sobelXed = filter(gray,ker);
+    return sobelXed; // TODO MODIFY AND COMPLETE
 }
 
 // Compute vertical Sobel filter
 
 GrayImage sobelY(const GrayImage &gray)
 {
-    return {}; // TODO MODIFY AND COMPLETE
+    GrayImage sobelYed;
+    Kernel ker { {-1, -2, -1},
+                 {0, 0, 0},
+                 {1, 2, 1} };
+    sobelYed = filter(gray, ker);
+    return sobelYed; // TODO MODIFY AND COMPLETE
 }
 
 // Compute the magnitude of combined Sobel filters
 
-GrayImage sobel(const GrayImage &gray)
-{
-    return {}; // TODO MODIFY AND COMPLETE
+GrayImage sobel(const GrayImage &gray) {
+    GrayImage sobeled;
+    sobeled = sobelX(gray);
+    sobeled = sobelY(sobeled);
+    return sobeled; // TODO MODIFY AND COMPLETE
 }
 
 // ************************************
