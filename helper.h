@@ -19,3 +19,5 @@ RGBImage read_image(std::string name);
  * Take a 2-dimensional vector with RGB values and write a png file.
  */
 void write_image(const RGBImage &image, std::string name);
+
+bool image_equality_checker(std::string const& path1, std::string const& path2);

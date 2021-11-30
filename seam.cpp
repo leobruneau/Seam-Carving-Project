@@ -132,6 +132,15 @@ GrayImage smooth(const GrayImage &gray) {
     return smoothed;
 }
 
+GrayImage smooth2(const GrayImage &gray) {
+  GrayImage smoothed;
+  Kernel ker { {0.0625, 0.125, 0.0625},
+               {0.125, 0.25, 0.125},
+               {0.0625, 0.125, 0.0625}};
+  smoothed = filter(gray, ker);
+  return smoothed;
+}
+
 // Compute horizontal Sobel filter
 GrayImage sobelX(const GrayImage &gray) {
     GrayImage sobelXed;

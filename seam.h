@@ -26,6 +26,7 @@ inline void clamp(long &val, long max);
 
 GrayImage filter(const GrayImage &gray, const Kernel &kernel);
 GrayImage smooth(const GrayImage &gray);
+GrayImage smooth2(const GrayImage &gray);
 GrayImage sobelX(const GrayImage &gray);
 GrayImage sobelY(const GrayImage &gray);
 GrayImage sobel(const GrayImage &gray);
