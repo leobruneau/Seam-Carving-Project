@@ -29,6 +29,7 @@ GrayImage smooth(const GrayImage &gray);
 GrayImage sobelX(const GrayImage &gray);
 GrayImage sobelY(const GrayImage &gray);
 GrayImage sobel(const GrayImage &gray);
+GrayImage sharpen(const GrayImage &gray);
 
 //  TASK 3 NEW: SEAM
 

@@ -139,7 +139,7 @@ GrayImage sobelX(const GrayImage &gray) {
                  {-2, 0, 2},
                  {-1, 0, 1} };
     sobelXed = filter(gray, ker);
-    return sobelXed; // TODO MODIFY AND COMPLETE
+    return sobelXed;
 }
 
 // Compute vertical Sobel filter
@@ -149,7 +149,7 @@ GrayImage sobelY(const GrayImage &gray) {
                  { 0,  0,  0},
                  { 1,  2,  1} };
     sobelYed = filter(gray, ker);
-    return sobelYed; // TODO MODIFY AND COMPLETE
+    return sobelYed;
 }
 
 // Compute the magnitude of combined Sobel filters
@@ -173,6 +173,15 @@ GrayImage sobel(const GrayImage &gray) {
       }
     }
     return sobeled;
+}
+
+GrayImage sharpen(const GrayImage &gray) {
+    GrayImage sharpened;
+    Kernel ker { { 0,-1,  0},
+                 {-1, 5, -1},
+                 { 0,-1,  0} };
+    sharpened = filter(gray, ker);
+    return sharpened;
 }
 
 // ************************************
