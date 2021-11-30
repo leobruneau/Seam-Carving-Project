@@ -11,11 +11,6 @@
 
 #include "seam_types.h"
 
-// ADDED FUNCTIONS:
-int digit_counter(const int& num);
-int binary_to_decimal(const int& bin);
-int decimal_to_binary(const int& dec);
-
 // TASK 1: COLOR
 double get_red(int rgb);
 double get_green(int rgb);
@@ -27,13 +22,15 @@ GrayImage to_gray(const RGBImage &cimage);
 RGBImage to_RGB(const GrayImage &gimage);
 
 //  TASK 2: FILTER
-inline void clamp(int &val, int max);
+inline void clamp(long &val, long max);
 
 GrayImage filter(const GrayImage &gray, const Kernel &kernel);
 GrayImage smooth(const GrayImage &gray);
+GrayImage smooth2(const GrayImage &gray);
 GrayImage sobelX(const GrayImage &gray);
 GrayImage sobelY(const GrayImage &gray);
 GrayImage sobel(const GrayImage &gray);
+GrayImage sharpen(const GrayImage &gray);
 
 //  TASK 3 NEW: SEAM
 
