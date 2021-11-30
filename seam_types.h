@@ -7,9 +7,9 @@ typedef std::vector<std::vector<int>> RGBImage;
 typedef std::vector<std::vector<double>> GrayImage;
 typedef std::vector<std::vector<double>> Kernel;
 typedef std::vector<size_t> Path;
+typedef std::vector<size_t> Successors;
 
-struct Node
-{
+struct Node {
     std::vector<size_t> successors;
     double costs;
     double distance_to_target;

@@ -53,4 +53,12 @@ int decimal_to_binary(const int& dec) {
     return bin;
 }
 
+Successors find_successors(const GrayImage &gray, const size_t &id) {
+    Successors successors;
+    successors.push_back(id+gray[0].size() - 1);
+    successors.push_back(successors[0] + 1);
+    successors.push_back(successors[1] + 1);
+    return successors;
+}
+
 /* A UTILISER POUR LE CODAGE EVENTUEL D'EXTENSIONS */
