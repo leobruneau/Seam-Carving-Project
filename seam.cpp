@@ -201,39 +201,64 @@ Graph create_graph(const GrayImage &gray) {
     Graph graph;
     Node node;
     GrayImage sobeled;
-    size_t id;
+    ID id;
     Successors successors;
     sobeled = sobel(gray);
     for(size_t i(0); i < gray.size(); ++i) {
-        std::cout << "salut" << std::endl;
         for(size_t j(0); j < gray[i].size(); ++j) {
-        std::cout << "batard" << std::endl;
           id = i*(gray[i].size()) + j;
-          successors = find_successors(gray, id);
-          for(size_t k(0); k < 3; ++k) {
+          if(i == gray.size() - 1) {
+            node.successors.push_back(gray.size()*gray[0].size() + 1);
+          } else {
+            successors = find_successors(gray, id);
+            for(size_t k(0); k < 3; ++k) {
               if((successors[k] >= (i+1)*gray[0].size()) and (successors[k] <= (i+2)*gray[0].size() - 1)) {
                 (node.successors).push_back(successors[k]);
               }
+            }
           }
           node.costs = sobeled[i][j];
           node.distance_to_target = INFINITY;
           node.predecessor_to_target = 0;
           graph.push_back(node);
+          (node.successors).clear();
+          node.costs = 0;
         }
     }
+    // initilizing and adding starting node
+    for(size_t i(0); i < gray[0].size(); ++i) {
+      node.successors.push_back(i);
+    }
+    node.costs = 0;
+    node.distance_to_target = gray.size() + 1;
+    node.predecessor_to_target = 0;
+    graph.push_back(node);
+    node.successors.clear();
 
-    return graph; // TODO MODIFY AND COMPLETE
+    //initializing and adding finishing node
+    node.distance_to_target = 0;
+    graph.push_back(node);
+
+    return graph;
 }
 
-// Return shortest path from Node to Node to
+// Return shortest path from Node from to Node to
 // The path does NOT include the from and to Node
-Path shortest_path(Graph &graph, size_t from, size_t to) {
+Path shortest_path(Graph &graph, ID from, ID to) {
+  // Path shortest_path du premier successeur;
+  // Path shortest_path du deuxieme successeur;
+  // Path shortest_path du troisieme successeur;
+  //
+  // comparer les 3 costs et prendre le plus petit
 
-    return {}; // TODO MODIFY AND COMPLETE
-};
+  return {}; // TODO MODIFY AND COMPLETE
+}
 
 Path find_seam(const GrayImage &gray) {
-    return {}; // TODO MODIFY AND COMPLETE
+  // for loop shortest_path de la derniere ligne
+  // prendre le plus petit cost
+  // (copier) et enlever le path
+  return {}; // TODO MODIFY AND COMPLETE
 }
 
 // ***********************************

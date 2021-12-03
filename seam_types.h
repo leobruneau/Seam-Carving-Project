@@ -6,11 +6,12 @@
 typedef std::vector<std::vector<int>> RGBImage;
 typedef std::vector<std::vector<double>> GrayImage;
 typedef std::vector<std::vector<double>> Kernel;
-typedef std::vector<size_t> Path;
-typedef std::vector<size_t> Successors;
+typedef size_t ID;
+typedef std::vector<ID> Path;
+typedef std::vector<ID> Successors;
 
 struct Node {
-    std::vector<size_t> successors;
+    std::vector<ID> successors;
     double costs;
     double distance_to_target;
     size_t predecessor_to_target;

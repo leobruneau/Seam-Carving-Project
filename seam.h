@@ -35,7 +35,7 @@ GrayImage sharpen(const GrayImage &gray);
 //  TASK 3 NEW: SEAM
 
 Graph create_graph(const GrayImage &gray);
-Path shortest_path(Graph &graph, size_t from, size_t to);
+Path shortest_path(Graph &graph, ID from, ID to);
 Path find_seam(const GrayImage &energy);
 
 // Provided functions

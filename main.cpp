@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     // run_unit_tests();
 
     // Initialize with a default value
-    std::string in_path = "img/wiki.png";
+    std::string in_path = "img/americascup.jpg";
     std::string out_path = "test.png";
     std::string check_path1 = "expected_outputs/americascup_grayed.png";
     std::string check_path2 = "outputs/test_grayed.png";
@@ -60,10 +60,12 @@ int main(int argc, char **argv)
     RGBImage image(read_image(in_path));
     GrayImage img = to_gray(image);
     graph = create_graph(img);
-    std::cout << img[0].size() << std::endl;
-    std::cout << "successor 1: " << (graph[0].successors)[0] << std::endl;
-    std::cout << "successor 2: " << (graph[0].successors)[1] << std::endl;
-    std::cout << "successor 3: " << (graph[0].successors)[2] << std::endl;
+    std::cout << img[0].size() << "x" << img.size() << std::endl;
+    std::cout << "successors for node 474000: " << graph[474000].successors.size() << std::endl;
+    std::cout << "graph size: " << graph.size() << std::endl;
+    // std::cout << "successor 1: " << (graph[474000].successors)[0] << std::endl;
+    // std::cout << "successor 2: " << (graph[474000].successors)[1] << std::endl;
+    // std::cout << "successor 3: " << (graph[474000].successors)[2] << std::endl;
 
     return 0;
 }
