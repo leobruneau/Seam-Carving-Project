@@ -245,7 +245,6 @@ Graph create_graph(const GrayImage &gray) {
 // Return shortest path from Node from to Node to
 // The path does NOT include the from and to Node
 Path shortest_path(Graph &graph, ID from, ID to) {
-  int i = 24;
   // Path shortest_path du premier successeur;
   // Path shortest_path du deuxieme successeur;
   // Path shortest_path du troisieme successeur;

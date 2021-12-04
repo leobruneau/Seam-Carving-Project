@@ -46,23 +46,23 @@ int main(int argc, char **argv)
 
     // // Uncomment for testing different phases:
     // test_equality(check_path1, check_path2);
-    // test_to_gray(in_path);
-    // test_smooth(in_path);
-    // test_sobelX(in_path);
-    // test_sobelY(in_path);
-    // test_sobel(in_path);
-    // test_sharpen(in_path);
-    // test_smooth_to_sobel(in_path);
+    test_to_gray(in_path);
+    test_smooth(in_path);
+    test_sobelX(in_path);
+    test_sobelY(in_path);
+    test_sobel(in_path);
+    test_sharpen(in_path);
+    test_smooth_to_sobel(in_path);
     // int num_seam(10); /* high value will slow things down */
     // test_hightlight_seam(in_path, num_seam);
     // test_remove_seam(in_path, num_seam);
-    Graph graph;
-    RGBImage image(read_image(in_path));
-    GrayImage img = to_gray(image);
-    graph = create_graph(img);
-    std::cout << img[0].size() << "x" << img.size() << std::endl;
-    std::cout << "successors for node 474000: " << graph[474000].successors.size() << std::endl;
-    std::cout << "graph size: " << graph.size() << std::endl;
+    // Graph graph;
+    // RGBImage image(read_image(in_path));
+    // GrayImage img = to_gray(image);
+    // graph = create_graph(img);
+    // std::cout << img[0].size() << "x" << img.size() << std::endl;
+    // std::cout << "successors for node 474000: " << graph[474000].successors.size() << std::endl;
+    // std::cout << "graph size: " << graph.size() << std::endl;
     // std::cout << "successor 1: " << (graph[474000].successors)[0] << std::endl;
     // std::cout << "successor 2: " << (graph[474000].successors)[1] << std::endl;
     // std::cout << "successor 3: " << (graph[474000].successors)[2] << std::endl;
