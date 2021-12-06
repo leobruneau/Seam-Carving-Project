@@ -16,7 +16,7 @@ bool equal(double x, double y, double precision)
 {
     return (std::fabs(x - y) < precision);
 }
-  
+
 void print_header(std::string const& header)
 {
     std::cerr << "---------------" << std::endl;
@@ -52,7 +52,7 @@ void print_image(GrayImage const& image)
     std::cerr << "}" << std::endl;
 }
 
-void print_node(Node const& node) 
+void print_node(Node const& node)
 {
     std::cerr << "{{";
     if (!node.successors.empty()) {
@@ -276,15 +276,15 @@ void test_to_gray_4_4()
 void test_to_gray_5_5()
 {
     // Randomly generated:
-    const RGBImage rgb_image({{0xbf83ed, 0x253a83, 0xa6ffd0, 0xe78deb, 0xef53be}, 
-                              {0x1f7509, 0xbbe1fe, 0xc40123, 0x66e9df, 0x76fef9}, 
-                              {0x31b342, 0x236b80, 0xcc3be3, 0x5c21e7, 0xebe9be}, 
-                              {0x1a0eb3, 0x1be9bc, 0x4a4d26, 0x290f24, 0xe17cff}, 
+    const RGBImage rgb_image({{0xbf83ed, 0x253a83, 0xa6ffd0, 0xe78deb, 0xef53be},
+                              {0x1f7509, 0xbbe1fe, 0xc40123, 0x66e9df, 0x76fef9},
+                              {0x31b342, 0x236b80, 0xcc3be3, 0x5c21e7, 0xebe9be},
+                              {0x1a0eb3, 0x1be9bc, 0x4a4d26, 0x290f24, 0xe17cff},
                               {0xb3e312, 0xb625b3, 0xd1f260, 0xca12c2, 0xe68b59}});
-    GrayImage expected({{{0.730719, 0.295425, 0.822222, 0.793464, 0.669281}, 
+    GrayImage expected({{{0.730719, 0.295425, 0.822222, 0.793464, 0.669281},
                          {0.205229, 0.870588, 0.303268, 0.729412, 0.811765},
                          {0.384314, 0.352941, 0.640523, 0.465359, 0.860131},
-                         {0.286275, 0.585621, 0.247059, 0.120261, 0.789542}, 
+                         {0.286275, 0.585621, 0.247059, 0.120261, 0.789542},
                          {0.554248, 0.520261, 0.715033, 0.541176, 0.598693}}});
 
     print_header("test_to_gray_5_5");
@@ -311,7 +311,7 @@ void test_sobelX_1()
 void test_sobelX_2()
 {
     // Randomly generated:
-    GrayImage energy = {{0.861324, 0.903912, 0.668282}, 
+    GrayImage energy = {{0.861324, 0.903912, 0.668282},
                         {0.430332, 0.476503, 0.242629},
                         {0.135265, 0.74065, 0.154726}};
     GrayImage expected = {{0.173936, -0.766829, -0.940765},
@@ -326,11 +326,11 @@ void test_sobelX_2()
 void test_sobelX_3()
 {
     // Randomly generated:
-    GrayImage energy = {{0.768527, 0.0347588, 0.568311}, 
-                        {0.0568832, 0.408555, 0.473698}, 
+    GrayImage energy = {{0.768527, 0.0347588, 0.568311},
+                        {0.0568832, 0.408555, 0.473698},
                         {0.80575, 0.223045, 0.956454}};
-    GrayImage expected = {{-1.84963, -0.18383, 1.6658}, 
-                          {-0.61313, 0.784119, 1.39725}, 
+    GrayImage expected = {{-1.84963, -0.18383, 1.6658},
+                          {-0.61313, 0.784119, 1.39725},
                           {-1.39644, 0.868928, 2.26537}};
 
     print_header("test_sobelX_3");
@@ -358,7 +358,7 @@ void test_sobelY_2()
     GrayImage energy = {{0.810088, 0.124107, 0.261972},
                         {0.0635178, 0.0824675, 0.428621},
                         {0.312224, 0.876371, 0.0934941}};
-    GrayImage expected = {{-2.28135, -0.663201, 0.458308}, 
+    GrayImage expected = {{-2.28135, -0.663201, 0.458308},
                           {-0.741328, 0.838185, 0.246829},
                           {1.54002, 1.50139, -0.211478}};
     print_header("test_sobelY_2");
@@ -369,7 +369,7 @@ void test_sobelY_2()
 void test_sobelY_3()
 {
     GrayImage energy = {{0.690886, 0.897239, 0.0535633},
-                        {0.292441, 0.655353, 0.347423}, 
+                        {0.292441, 0.655353, 0.347423},
                         {0.726867, 0.992577, 0.176277}};
     GrayImage expected = {{-1.43722, -0.588358, 0.639692},
                           {0.203281, 0.349371, 0.463479},
@@ -413,7 +413,7 @@ void test_create_graph_1()
 {
     constexpr auto MAX_DIST = std::numeric_limits<double>::max();
     GrayImage gray = {{0.0, 0.1, 0.2, 0.3},
-                      {0.4, 0.5, 0.6, 0.7}, 
+                      {0.4, 0.5, 0.6, 0.7},
                       {0.8, 0.9, 1.0, 1.1}};
     Graph expected;
     expected.push_back({{4, 5}, 0, MAX_DIST, 0});
@@ -440,7 +440,7 @@ void test_create_graph_2()
 {
     // Randomly generated:
     constexpr auto MAX_DIST = std::numeric_limits<double>::max();
-    GrayImage gray = {{0.1941, 0.61678, 0.165914, 0.9352, 0.705023}, 
+    GrayImage gray = {{0.1941, 0.61678, 0.165914, 0.9352, 0.705023},
                       {0.900316, 0.683907, 0.44065, 0.91574, 0.563579},
                       {0.791948, 0.871053, 0.737948, 0.172903, 0.751178},
                       {0.593102, 0.264439, 0.131972, 0.131486, 0.76045},
@@ -488,7 +488,7 @@ void test_shortest_path_1()
     graph.push_back({{3}, 2, MAX_DIST, 0});
     graph.push_back({{2, 4}, 3, MAX_DIST, 0});
     graph.push_back({{4}, 4, MAX_DIST, 0});
-    
+
     print_header("test_shortest_path_1");
     Path computed = shortest_path(graph, 0, 4);
     check_equal({1, 3}, computed);
@@ -512,7 +512,7 @@ void test_shortest_path_2()
     graph.push_back({{13}, 1.1, MAX_DIST, 0});
     graph.push_back({{0, 1, 2, 3}, 0, MAX_DIST, 0});
     graph.push_back({{}, 0, MAX_DIST, 0});
-    
+
     print_header("test_shortest_path_2");
     Path computed = shortest_path(graph, 0, 12);
     check_equal({}, computed);
@@ -531,24 +531,24 @@ void test_find_seam_1()
     check_equal({0, 1, 2, 1}, x_coordinates);
 }
 
-void run_unit_tests() 
+void run_unit_tests()
 {
-    test_color();
-    test_to_gray_2_2();
-    test_to_gray_3_3();
-    test_to_gray_4_4();
-    test_to_gray_5_5();
-    //test_sobelX_1();
-    //test_sobelX_2();
-    //test_sobelX_3();
-    //test_sobelY_1();
-    //test_sobelY_2();
-    //test_sobelY_3();
-    //test_sobel_1();
-    //test_smooth_1();
-    //test_create_graph_1();
-    //test_create_graph_2();
-    //test_shortest_path_1();
-    //test_shortest_path_2();
-    //test_find_seam_1();
+    // test_color();
+    // test_to_gray_2_2();
+    // test_to_gray_3_3();
+    // test_to_gray_4_4();
+    // test_to_gray_5_5();
+    // test_sobelX_1();
+    // test_sobelX_2();
+    // test_sobelX_3();
+    // test_sobelY_1();
+    // test_sobelY_2();
+    // test_sobelY_3();
+    // test_sobel_1();
+    // test_smooth_1();
+    // test_create_graph_1();
+    // test_create_graph_2();
+    test_shortest_path_1();
+    test_shortest_path_2();
+    test_find_seam_1();
 }

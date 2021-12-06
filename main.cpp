@@ -28,10 +28,10 @@ void test_remove_seam(std::string const& in_path, int num);
 
 int main(int argc, char **argv)
 {
-    // run_unit_tests();
+    run_unit_tests();
 
     // Initialize with a default value
-    std::string in_path = "img/americascup.jpg";
+    std::string in_path = "img/panorama.jpg";
     std::string out_path = "test.png";
     std::string check_path1 = "expected_outputs/americascup_grayed.png";
     std::string check_path2 = "outputs/test_grayed.png";
@@ -46,19 +46,26 @@ int main(int argc, char **argv)
 
     // // Uncomment for testing different phases:
     // test_equality(check_path1, check_path2);
-    test_to_gray(in_path);
-    test_smooth(in_path);
-    test_sobelX(in_path);
-    test_sobelY(in_path);
-    test_sobel(in_path);
-    test_sharpen(in_path);
-    test_smooth_to_sobel(in_path);
-    // int num_seam(10); /* high value will slow things down */
-    // test_hightlight_seam(in_path, num_seam);
-    // test_remove_seam(in_path, num_seam);
+    // test_to_gray(in_path);
+    // test_smooth(in_path);
+    // test_sobelX(in_path);
+    // test_sobelY(in_path);
+    // test_sobel(in_path);
+    // test_sharpen(in_path);
+    // test_smooth_to_sobel(in_path);
+    int num_seam(10); /* high value will slow things down */
+    test_hightlight_seam(in_path, num_seam);
+    test_remove_seam(in_path, num_seam);
+    // test_equality("expected_outputs/americascup_10_highlighted_seam.png", "outputs/test_highlighted_seam.png");
+    // test_equality("expected_outputs/americascup_10_removed_seam.png", "outputs/test_removed_seam.png");
     // Graph graph;
     // RGBImage image(read_image(in_path));
     // GrayImage img = to_gray(image);
+    // RGBImage image(read_image(in_path));
+    // Graph graph(create_graph(to_gray(image)));
+    // Path test(shortest_path(graph, graph.size()-2, graph.size()-1));
+    // std::cout << "width: " << image.size() << std::flush << std::endl;
+    // std::cout << "size of path: " << test.size() << std::flush << std::endl;
     // graph = create_graph(img);
     // std::cout << img[0].size() << "x" << img.size() << std::endl;
     // std::cout << "successors for node 474000: " << graph[474000].successors.size() << std::endl;

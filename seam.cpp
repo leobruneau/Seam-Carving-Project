@@ -7,6 +7,8 @@
 #include "seam.h"
 #include "extension.h"
 
+constexpr double INF(std::numeric_limits<double>::max());
+
 // ***********************************
 // TASK 1: COLOR
 // ***********************************
@@ -200,10 +202,10 @@ GrayImage sharpen(const GrayImage &gray) {
 Graph create_graph(const GrayImage &gray) {
     Graph graph;
     Node node;
-    GrayImage sobeled;
+    // GrayImage sobeled;          the cost are the value of the pixel in the gray image
+    // sobeled = sobel(gray);
     ID id;
     Successors successors;
-    sobeled = sobel(gray);
     for(size_t i(0); i < gray.size(); ++i) {
         for(size_t j(0); j < gray[i].size(); ++j) {
           id = i*(gray[i].size()) + j;
@@ -217,8 +219,9 @@ Graph create_graph(const GrayImage &gray) {
               }
             }
           }
-          node.costs = sobeled[i][j];
-          node.distance_to_target = INFINITY;
+          // node.costs = sobeled[i][j];
+          node.costs = gray[i][j];
+          node.distance_to_target = INF;
           node.predecessor_to_target = 0;
           graph.push_back(node);
           (node.successors).clear();
@@ -230,13 +233,12 @@ Graph create_graph(const GrayImage &gray) {
       node.successors.push_back(i);
     }
     node.costs = 0;
-    node.distance_to_target = gray.size() + 1;
+    node.distance_to_target = INF;
     node.predecessor_to_target = 0;
     graph.push_back(node);
     node.successors.clear();
 
     //initializing and adding finishing node
-    node.distance_to_target = 0;
     graph.push_back(node);
 
     return graph;
@@ -245,20 +247,55 @@ Graph create_graph(const GrayImage &gray) {
 // Return shortest path from Node from to Node to
 // The path does NOT include the from and to Node
 Path shortest_path(Graph &graph, ID from, ID to) {
+  Path path;
+  bool modified(true);
+  graph[from].distance_to_target = graph[from].costs;
+  modified = true;
+  while(modified) {
+    modified = false;
+    for(size_t i(0); i < graph.size(); ++i) {
+      for(size_t j(0); j < (graph[i].successors).size(); ++j) {
+        if(graph[graph[i].successors[j]].distance_to_target > graph[i].distance_to_target + graph[graph[i].successors[j]].costs) {
+          graph[graph[i].successors[j]].distance_to_target = graph[i].distance_to_target + graph[graph[i].successors[j]].costs;
+          graph[graph[i].successors[j]].predecessor_to_target = i;
+          modified = true;
+        }
+      }
+    }
+  }
+  // for(size_t i(0); i < graph.size(); ++i) {
+  //   std::cout << "Predecessor for node " << i << ": " << graph[i].predecessor_to_target << std::flush << std::endl;
+  // }
+
+  find_path(graph, from, to, path);
+
   // Path shortest_path du premier successeur;
   // Path shortest_path du deuxieme successeur;
   // Path shortest_path du troisieme successeur;
   //
   // comparer les 3 costs et prendre le plus petit
 
-  return {}; // TODO MODIFY AND COMPLETE
+  return path; // TODO MODIFY AND COMPLETE
 }
 
 Path find_seam(const GrayImage &gray) {
   // for loop shortest_path de la derniere ligne
   // prendre le plus petit cost
   // (copier) et enlever le path
-  return {}; // TODO MODIFY AND COMPLETE
+
+  unsigned int width(gray[0].size()), height(gray.size());
+  Graph graph(create_graph(gray));
+  ID from(graph.size()-2), to(graph.size()-1);
+  Path path(shortest_path(graph, from, to));
+  Path seam;
+  for(size_t i(0); i < path.size(); ++i) {
+    for(size_t j(0); j < height; ++j) {
+      if((path[i] >= j*width && (path[i] <= ((j+1)*width - 1))))
+        seam.push_back(path[i] - j*width);
+    }
+  }
+
+  return seam; // TODO MODIFY AND COMPLETE
 }
 
 // ***********************************
