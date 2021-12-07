@@ -51,11 +51,8 @@ double get_gray(int rgb) {
 int get_RGB(double red, double green, double blue) {
     int r(red*255), g(green*255), b(blue*255);
     int rgb(0b00000000);
-    // rgb = (rgb << 8) + decimal_to_binary(r);
     rgb = (rgb << 8) + r;
-    // rgb = (rgb << 8) + decimal_to_binary(g);
     rgb = (rgb << 8) + g;
-    // rgb = (rgb << 8) + decimal_to_binary(b);
     rgb = (rgb << 8) + b;
     return rgb;
 }
@@ -118,7 +115,7 @@ GrayImage filter(const GrayImage &gray, const Kernel &kernel) {
                 }
             }
             filtered[i].push_back(average_pixel);
-            average_pixel = 0; // we forgot to inizialize it back to zero at each new pixel !
+            average_pixel = 0.0;
         }
     }
     return filtered;
@@ -134,6 +131,7 @@ GrayImage smooth(const GrayImage &gray) {
     return smoothed;
 }
 
+// Smooth function implementing a slightly different kernel
 GrayImage smooth2(const GrayImage &gray) {
   GrayImage smoothed;
   Kernel ker { {0.0625, 0.125, 0.0625},
@@ -202,13 +200,16 @@ GrayImage sharpen(const GrayImage &gray) {
 Graph create_graph(const GrayImage &gray) {
     Graph graph;
     Node node;
-    // GrayImage sobeled;          the cost are the value of the pixel in the gray image
-    // sobeled = sobel(gray);
     ID id;
     Successors successors;
+
+    // looping over the matrix to create a node for each pixel
+
     for(size_t i(0); i < gray.size(); ++i) {
         for(size_t j(0); j < gray[i].size(); ++j) {
           id = i*(gray[i].size()) + j;
+
+          // for the pixels that are on the last row, we give them the same successor (i.e. the last node)
           if(i == gray.size() - 1) {
             node.successors.push_back(gray.size()*gray[0].size() + 1);
           } else {
@@ -219,7 +220,6 @@ Graph create_graph(const GrayImage &gray) {
               }
             }
           }
-          // node.costs = sobeled[i][j];
           node.costs = gray[i][j];
           node.distance_to_target = INF;
           node.predecessor_to_target = 0;
@@ -228,7 +228,8 @@ Graph create_graph(const GrayImage &gray) {
           node.costs = 0;
         }
     }
-    // initilizing and adding starting node
+
+    // initilizing and adding starting node. Its successors are all the pixels of the first line
     for(size_t i(0); i < gray[0].size(); ++i) {
       node.successors.push_back(i);
     }
@@ -238,7 +239,7 @@ Graph create_graph(const GrayImage &gray) {
     graph.push_back(node);
     node.successors.clear();
 
-    //initializing and adding finishing node
+    //initializing and adding finishing node. It has no successors
     graph.push_back(node);
 
     return graph;
@@ -249,8 +250,10 @@ Graph create_graph(const GrayImage &gray) {
 Path shortest_path(Graph &graph, ID from, ID to) {
   Path path;
   bool modified(true);
+
+  // Implementing Dijkstra's algorithm to find the best predecessor for each node
+
   graph[from].distance_to_target = graph[from].costs;
-  modified = true;
   while(modified) {
     modified = false;
     for(size_t i(0); i < graph.size(); ++i) {
@@ -263,26 +266,15 @@ Path shortest_path(Graph &graph, ID from, ID to) {
       }
     }
   }
-  // for(size_t i(0); i < graph.size(); ++i) {
-  //   std::cout << "Predecessor for node " << i << ": " << graph[i].predecessor_to_target << std::flush << std::endl;
-  // }
 
+  // Calling recursive function to compose path
   find_path(graph, from, to, path);
-
-  // Path shortest_path du premier successeur;
-  // Path shortest_path du deuxieme successeur;
-  // Path shortest_path du troisieme successeur;
-  //
-  // comparer les 3 costs et prendre le plus petit
-
-  return path; // TODO MODIFY AND COMPLETE
+  return path;
 }
 
+// Final function that creates the graph, finds the shortest path and finally creates the seam by
+// calculating the x coordinates of each node in the path
 Path find_seam(const GrayImage &gray) {
-  // for loop shortest_path de la derniere ligne
-  // prendre le plus petit cost
-  // (copier) et enlever le path
-
   unsigned int width(gray[0].size()), height(gray.size());
   Graph graph(create_graph(gray));
   ID from(graph.size()-2), to(graph.size()-1);
@@ -294,8 +286,7 @@ Path find_seam(const GrayImage &gray) {
         seam.push_back(path[i] - j*width);
     }
   }
-
-  return seam; // TODO MODIFY AND COMPLETE
+  return seam;
 }
 
 // ***********************************
@@ -329,7 +320,6 @@ RGBImage highlight_seam(const RGBImage &image, const Path &seam)
 
 // Remove specified seam from  a gray-scale image
 // return the new gray image (width is decreased by 1)
-
 GrayImage remove_seam(const GrayImage &gray, const Path &seam)
 {
     GrayImage result(gray);

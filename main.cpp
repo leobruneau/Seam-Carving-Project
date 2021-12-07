@@ -21,8 +21,6 @@ void test_smooth(std::string const& in_path);
 void test_sobelX(std::string const& in_path);
 void test_sobelY(std::string const& in_path);
 void test_sobel(std::string const& in_path);
-void test_sharpen(std::string const& in_path);
-void test_smooth_to_sobel(std::string const& in_path);
 void test_hightlight_seam(std::string const& in_path, int num);
 void test_remove_seam(std::string const& in_path, int num);
 
@@ -31,7 +29,7 @@ int main(int argc, char **argv)
     run_unit_tests();
 
     // Initialize with a default value
-    std::string in_path = "img/panorama.jpg";
+    std::string in_path = "img/tower.jpg";
     std::string out_path = "test.png";
     std::string check_path1 = "expected_outputs/americascup_grayed.png";
     std::string check_path2 = "outputs/test_grayed.png";
@@ -53,36 +51,10 @@ int main(int argc, char **argv)
     // test_sobel(in_path);
     // test_sharpen(in_path);
     // test_smooth_to_sobel(in_path);
-    int num_seam(10); /* high value will slow things down */
+    int num_seam(150); /* high value will slow things down */
     test_hightlight_seam(in_path, num_seam);
     test_remove_seam(in_path, num_seam);
-    // test_equality("expected_outputs/americascup_10_highlighted_seam.png", "outputs/test_highlighted_seam.png");
-    // test_equality("expected_outputs/americascup_10_removed_seam.png", "outputs/test_removed_seam.png");
-    // Graph graph;
-    // RGBImage image(read_image(in_path));
-    // GrayImage img = to_gray(image);
-    // RGBImage image(read_image(in_path));
-    // Graph graph(create_graph(to_gray(image)));
-    // Path test(shortest_path(graph, graph.size()-2, graph.size()-1));
-    // std::cout << "width: " << image.size() << std::flush << std::endl;
-    // std::cout << "size of path: " << test.size() << std::flush << std::endl;
-    // graph = create_graph(img);
-    // std::cout << img[0].size() << "x" << img.size() << std::endl;
-    // std::cout << "successors for node 474000: " << graph[474000].successors.size() << std::endl;
-    // std::cout << "graph size: " << graph.size() << std::endl;
-    // std::cout << "successor 1: " << (graph[474000].successors)[0] << std::endl;
-    // std::cout << "successor 2: " << (graph[474000].successors)[1] << std::endl;
-    // std::cout << "successor 3: " << (graph[474000].successors)[2] << std::endl;
-
     return 0;
-}
-
-void test_equality(std::string const& path1, std::string const& path2) {
-  if(image_equality_checker(path1, path2)) {
-    std::cout << "The two images are identical! Pixel by pixel!" << std::endl;
-  } else {
-    std::cout << "Sorry, there seems to be some difference between the two." << std::endl;
-  }
 }
 
 void test_to_gray(std::string const& in_path)
@@ -130,25 +102,6 @@ void test_sobel(std::string const& in_path)
         GrayImage sobeled_image(sobel(gray_image));
         write_image(to_RGB(sobeled_image), "outputs/test_sobel.png");
     }
-}
-
-void test_sharpen(std::string const& in_path) {
-    RGBImage image(read_image(in_path));
-    if(!image.empty()) {
-        GrayImage gray_image(to_gray(image));
-        GrayImage sharpened_image(sharpen(gray_image));
-        write_image(to_RGB(sharpened_image), "outputs/test_sharpen.png");
-    }
-}
-
-void test_smooth_to_sobel(std::string const& in_path) {
-  RGBImage image(read_image(in_path));
-  if(!image.empty()) {
-    GrayImage gray_image(to_gray(image));
-    GrayImage smooth_image(smooth(gray_image));
-    GrayImage sobeled_image(sobel(smooth_image));
-    write_image(to_RGB(sobeled_image), "outputs/test_smooth_sobel.png");
-  }
 }
 
 void test_hightlight_seam(std::string const& in_path, int num)
