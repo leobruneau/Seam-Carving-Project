@@ -21,17 +21,15 @@ void test_smooth(std::string const& in_path);
 void test_sobelX(std::string const& in_path);
 void test_sobelY(std::string const& in_path);
 void test_sobel(std::string const& in_path);
-void test_sharpen(std::string const& in_path);
-void test_smooth_to_sobel(std::string const& in_path);
 void test_hightlight_seam(std::string const& in_path, int num);
 void test_remove_seam(std::string const& in_path, int num);
 
 int main(int argc, char **argv)
 {
-    // run_unit_tests();
+    run_unit_tests();
 
     // Initialize with a default value
-    std::string in_path = "img/americascup.jpg";
+    std::string in_path = "img/tower.jpg";
     std::string out_path = "test.png";
     std::string check_path1 = "expected_outputs/americascup_grayed.png";
     std::string check_path2 = "outputs/test_grayed.png";
@@ -45,7 +43,7 @@ int main(int argc, char **argv)
     }
 
     // // Uncomment for testing different phases:
-    test_equality(check_path1, check_path2);
+    // test_equality(check_path1, check_path2);
     // test_to_gray(in_path);
     // test_smooth(in_path);
     // test_sobelX(in_path);
@@ -53,19 +51,10 @@ int main(int argc, char **argv)
     // test_sobel(in_path);
     // test_sharpen(in_path);
     // test_smooth_to_sobel(in_path);
-    // int num_seam(10); /* high value will slow things down */
-    // test_hightlight_seam(in_path, num_seam);
-    //  test_remove_seam(in_path, num_seam);
-
+    int num_seam(150); /* high value will slow things down */
+    test_hightlight_seam(in_path, num_seam);
+    test_remove_seam(in_path, num_seam);
     return 0;
-}
-
-void test_equality(std::string const& path1, std::string const& path2) {
-  if(image_equality_checker(path1, path2)) {
-    std::cout << "The two images are identical! Pixel by pixel!" << std::endl;
-  } else {
-    std::cout << "Sorry, there seems to be some difference between the two." << std::endl;
-  }
 }
 
 void test_to_gray(std::string const& in_path)
@@ -113,25 +102,6 @@ void test_sobel(std::string const& in_path)
         GrayImage sobeled_image(sobel(gray_image));
         write_image(to_RGB(sobeled_image), "outputs/test_sobel.png");
     }
-}
-
-void test_sharpen(std::string const& in_path) {
-    RGBImage image(read_image(in_path));
-    if(!image.empty()) {
-        GrayImage gray_image(to_gray(image));
-        GrayImage sharpened_image(sharpen(gray_image));
-        write_image(to_RGB(sharpened_image), "outputs/test_sharpen.png");
-    }
-}
-
-void test_smooth_to_sobel(std::string const& in_path) {
-  RGBImage image(read_image(in_path));
-  if(!image.empty()) {
-    GrayImage gray_image(to_gray(image));
-    GrayImage smooth_image(smooth(gray_image));
-    GrayImage sobeled_image(sobel(smooth_image));
-    write_image(to_RGB(sobeled_image), "outputs/test_smooth_sobel.png");
-  }
 }
 
 void test_hightlight_seam(std::string const& in_path, int num)

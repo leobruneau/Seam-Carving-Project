@@ -7,6 +7,8 @@
 #include "seam.h"
 #include "extension.h"
 
+constexpr double INF(std::numeric_limits<double>::max());
+
 // ***********************************
 // TASK 1: COLOR
 // ***********************************
@@ -49,11 +51,8 @@ double get_gray(int rgb) {
 int get_RGB(double red, double green, double blue) {
     int r(red*255), g(green*255), b(blue*255);
     int rgb(0b00000000);
-    // rgb = (rgb << 8) + decimal_to_binary(r);
     rgb = (rgb << 8) + r;
-    // rgb = (rgb << 8) + decimal_to_binary(g);
     rgb = (rgb << 8) + g;
-    // rgb = (rgb << 8) + decimal_to_binary(b);
     rgb = (rgb << 8) + b;
     return rgb;
 }
@@ -116,7 +115,7 @@ GrayImage filter(const GrayImage &gray, const Kernel &kernel) {
                 }
             }
             filtered[i].push_back(average_pixel);
-            average_pixel = 0; // we forgot to inizialize it back to zero at each new pixel !
+            average_pixel = 0.0;
         }
     }
     return filtered;
@@ -132,10 +131,11 @@ GrayImage smooth(const GrayImage &gray) {
     return smoothed;
 }
 
+// Smooth function implementing a slightly different kernel
 GrayImage smooth2(const GrayImage &gray) {
   GrayImage smoothed;
   Kernel ker { {0.0625, 0.125, 0.0625},
-               {0.125, 0.25, 0.125},
+               {0.125,  0.25,  0.125 },
                {0.0625, 0.125, 0.0625}};
   smoothed = filter(gray, ker);
   return smoothed;
@@ -197,22 +197,96 @@ GrayImage sharpen(const GrayImage &gray) {
 // TASK 3: SEAM
 // ************************************
 
-Graph create_graph(const GrayImage &gray)
-{
-    return {}; // TODO MODIFY AND COMPLETE
+Graph create_graph(const GrayImage &gray) {
+    Graph graph;
+    Node node;
+    ID id;
+    Successors successors;
+
+    // looping over the matrix to create a node for each pixel
+
+    for(size_t i(0); i < gray.size(); ++i) {
+        for(size_t j(0); j < gray[i].size(); ++j) {
+          id = i*(gray[i].size()) + j;
+
+          // for the pixels that are on the last row, we give them the same successor (i.e. the last node)
+          if(i == gray.size() - 1) {
+            node.successors.push_back(gray.size()*gray[0].size() + 1);
+          } else {
+            successors = find_successors(gray, id);
+            for(size_t k(0); k < 3; ++k) {
+              if((successors[k] >= (i+1)*gray[0].size()) and (successors[k] <= (i+2)*gray[0].size() - 1)) {
+                (node.successors).push_back(successors[k]);
+              }
+            }
+          }
+          node.costs = gray[i][j];
+          node.distance_to_target = INF;
+          node.predecessor_to_target = 0;
+          graph.push_back(node);
+          (node.successors).clear();
+          node.costs = 0;
+        }
+    }
+
+    // initilizing and adding starting node. Its successors are all the pixels of the first line
+    for(size_t i(0); i < gray[0].size(); ++i) {
+      node.successors.push_back(i);
+    }
+    node.costs = 0;
+    node.distance_to_target = INF;
+    node.predecessor_to_target = 0;
+    graph.push_back(node);
+    node.successors.clear();
+
+    //initializing and adding finishing node. It has no successors
+    graph.push_back(node);
+
+    return graph;
 }
 
 // Return shortest path from Node from to Node to
 // The path does NOT include the from and to Node
-Path shortest_path(Graph &graph, size_t from, size_t to)
-{
+Path shortest_path(Graph &graph, ID from, ID to) {
+  Path path;
+  bool modified(true);
 
-    return {}; // TODO MODIFY AND COMPLETE
-};
+  // Implementing Dijkstra's algorithm to find the best predecessor for each node
 
-Path find_seam(const GrayImage &gray)
-{
-    return {}; // TODO MODIFY AND COMPLETE
+  graph[from].distance_to_target = graph[from].costs;
+  while(modified) {
+    modified = false;
+    for(size_t i(0); i < graph.size(); ++i) {
+      for(size_t j(0); j < (graph[i].successors).size(); ++j) {
+        if(graph[graph[i].successors[j]].distance_to_target > graph[i].distance_to_target + graph[graph[i].successors[j]].costs) {
+          graph[graph[i].successors[j]].distance_to_target = graph[i].distance_to_target + graph[graph[i].successors[j]].costs;
+          graph[graph[i].successors[j]].predecessor_to_target = i;
+          modified = true;
+        }
+      }
+    }
+  }
+
+  // Calling recursive function to compose path
+  find_path(graph, from, to, path);
+  return path;
+}
+
+// Final function that creates the graph, finds the shortest path and finally creates the seam by
+// calculating the x coordinates of each node in the path
+Path find_seam(const GrayImage &gray) {
+  unsigned int width(gray[0].size()), height(gray.size());
+  Graph graph(create_graph(gray));
+  ID from(graph.size()-2), to(graph.size()-1);
+  Path path(shortest_path(graph, from, to));
+  Path seam;
+  for(size_t i(0); i < path.size(); ++i) {
+    for(size_t j(0); j < height; ++j) {
+      if((path[i] >= j*width && (path[i] <= ((j+1)*width - 1))))
+        seam.push_back(path[i] - j*width);
+    }
+  }
+  return seam;
 }
 
 // ***********************************
@@ -244,9 +318,8 @@ RGBImage highlight_seam(const RGBImage &image, const Path &seam)
     return result;
 }
 
-// Remove specified seam from a gray-scale image
+// Remove specified seam from  a gray-scale image
 // return the new gray image (width is decreased by 1)
-
 GrayImage remove_seam(const GrayImage &gray, const Path &seam)
 {
     GrayImage result(gray);
