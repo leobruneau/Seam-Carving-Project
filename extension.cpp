@@ -1,7 +1,7 @@
-#include "extension.h"
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include "extension.h"
 #include "seam_types.h"
 #include "helper.h"
 #include "seam.h"
@@ -9,7 +9,7 @@
 /* A UTILISER POUR LE CODAGE EVENTUEL D'EXTENSIONS */
 
 // int digit_counter(const int& num) {
-//   // function to count the number of digits in an integer that will be used
+//   // Function to count the number of digits in an integer that will be used
 //   // in the function to convert from binary to decimal
 //   bool flag(true);
 //   int digits(0), i(1);
@@ -23,7 +23,8 @@
 //   }
 //   return digits;
 // }
-// Added function to convert from binary to decimal - which now I see is actually useless
+//
+// // Function to convert from binary to decimal - which now we see is actually useless
 // int binary_to_decimal(const int& bin) {
 //   int temp(0), decimal(0);
 //   int digits = digit_counter(bin);
@@ -35,7 +36,8 @@
 //   }
 //   return decimal;
 // }
-
+//
+// // Function to convert from decimal to binary - which now we see is actually useless
 // int decimal_to_binary(const int& dec) {
 //   int i(0), n(0);
 //   int bin = dec;
@@ -59,9 +61,11 @@
 // }
 
 // Function that implements a different kernel that increases image contrast
-void test_sharpen(std::string const& in_path) {
+void test_sharpen(std::string const& in_path)
+{
     RGBImage image(read_image(in_path));
-    if(!image.empty()) {
+    if(!image.empty())
+    {
         GrayImage gray_image(to_gray(image));
         GrayImage sharpened_image(sharpen(gray_image));
         write_image(to_RGB(sharpened_image), "outputs/test_sharpen.png");
@@ -69,9 +73,11 @@ void test_sharpen(std::string const& in_path) {
 }
 
 // Function that creates sobeled image by first apllying smooth filter to see the difference
-void test_smooth_to_sobel(std::string const& in_path) {
+void test_smooth_to_sobel(std::string const& in_path)
+{
   RGBImage image(read_image(in_path));
-  if(!image.empty()) {
+  if(!image.empty())
+  {
     GrayImage gray_image(to_gray(image));
     GrayImage smooth_image(smooth(gray_image));
     GrayImage sobeled_image(sobel(smooth_image));
@@ -79,17 +85,46 @@ void test_smooth_to_sobel(std::string const& in_path) {
   }
 }
 
+// Function to test only the sobelX kernel and produce an image after applying just this filter to the gray image
+void test_sobelX(std::string const& in_path)
+{
+    RGBImage image(read_image(in_path));
+    if (!image.empty())
+    {
+        GrayImage gray_image(to_gray(image));
+        GrayImage sobelXed(sobelX(gray_image));
+        write_image(to_RGB(sobelXed), "outputs/test_sobelX.png");
+    }
+}
+
+// Function to test only the sobelY kernel and produce an image after applying just this filter to the gray image
+void test_sobelY(std::string const& in_path)
+{
+    RGBImage image(read_image(in_path));
+    if (!image.empty())
+    {
+        GrayImage gray_image(to_gray(image));
+        GrayImage sobelYed(sobelY(gray_image));
+        write_image(to_RGB(sobelYed), "outputs/test_sobelY.png");
+    }
+}
+
 // functions that takes in two images and compares each pixel to verify that the two are identical
-void test_equality(std::string const& path1, std::string const& path2) {
-  if(image_equality_checker(path1, path2)) {
+void test_equality(std::string const& path1, std::string const& path2)
+{
+  if(image_equality_checker(path1, path2))
+  {
     std::cout << "The two images are identical! Pixel by pixel!" << std::endl;
-  } else {
+  }
+  else
+  {
     std::cout << "Sorry, there seems to be some difference between the two." << std::endl;
   }
 }
 
 // finding successors for each node in the graph
-Successors find_successors(const GrayImage &gray, const size_t &id) {
+Successors find_successors(const GrayImage &gray, const size_t &id)
+{
     Successors successors;
     successors.push_back(id+gray[0].size() - 1);
     successors.push_back(id+gray[0].size());
@@ -98,9 +133,46 @@ Successors find_successors(const GrayImage &gray, const size_t &id) {
 }
 
 // Recursive functions that composes the graph from a stanrting and an ending node in a graph
-void find_path(const Graph& graph, const ID& from, const ID& to, Path& path) {
-  if(from != graph[to].predecessor_to_target) {
+void find_path(const Graph& graph, const ID& from, const ID& to, Path& path)
+{
+  if(from != graph[to].predecessor_to_target)
+  {
     path.insert(path.begin(), graph[to].predecessor_to_target);
     find_path(graph, from, graph[to].predecessor_to_target, path);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// end
