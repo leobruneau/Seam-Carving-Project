@@ -74,11 +74,9 @@ int get_RGB(double gray)
 GrayImage to_gray(const RGBImage &cimage)
 {
     GrayImage gimage;
-    for(size_t i(0); i < cimage.size(); ++i)
-    {
+    for(size_t i(0); i < cimage.size(); ++i) {
       gimage.push_back(std::vector<double> (0));
-      for(size_t j(0); j < cimage[i].size(); ++j)
-      {
+      for(size_t j(0); j < cimage[i].size(); ++j) {
         gimage[i].push_back(get_gray(cimage[i][j]));
       }
     }
@@ -89,11 +87,9 @@ GrayImage to_gray(const RGBImage &cimage)
 RGBImage to_RGB(const GrayImage &gimage)
 {
     RGBImage cimage;
-    for(size_t i(0); i < gimage.size(); ++i)
-    {
+    for(size_t i(0); i < gimage.size(); ++i) {
       cimage.push_back(std::vector<int> (0));
-      for(size_t j(0); j < gimage[i].size(); ++j)
-      {
+      for(size_t j(0); j < gimage[i].size(); ++j) {
         cimage[i].push_back(get_RGB(gimage[i][j]));
       }
     }
@@ -118,15 +114,14 @@ GrayImage filter(const GrayImage &gray, const Kernel &kernel)
     double average_pixel(.0);
     long val_k(0), val_l(0);
     GrayImage filtered;
-    for(size_t i(0); i < gray.size(); ++i)
-    {
+    for(size_t i(0); i < gray.size(); ++i) {
+
         filtered.push_back(std::vector<double> (0));
-        for(size_t j(0); j < gray[i].size(); ++j)
-        {
-            for(size_t k(0); k < kernel.size(); ++k)
-            {
-                for(size_t l(0); l < kernel[k].size(); ++l)
-                {
+        for(size_t j(0); j < gray[i].size(); ++j) {
+
+            for(size_t k(0); k < kernel.size(); ++k) {
+
+                for(size_t l(0); l < kernel[k].size(); ++l) {
                     val_k = i - 1 + k; clamp(val_k, gray.size()-1);
                     val_l = j - 1 + l; clamp(val_l, gray[i].size()-1);
                     average_pixel += kernel[k][l]*gray[val_k][val_l];
@@ -196,11 +191,9 @@ GrayImage sobel(const GrayImage &gray)
                   {-1, 0, 1} };
     sobelXed = filter(gray, kerX);
     sobelYed = filter(gray, kerY);
-    for(size_t i(0); i < gray.size(); ++i)
-    {
+    for(size_t i(0); i < gray.size(); ++i) {
       sobeled.push_back(std::vector<double> (0));
-      for(size_t j(0); j < gray[i].size(); ++j)
-      {
+      for(size_t j(0); j < gray[i].size(); ++j) {
         sobel_pixel = sqrt(pow(sobelXed[i][j], 2) + pow(sobelYed[i][j], 2));
         sobeled[i].push_back(sobel_pixel);
         sobel_pixel = 0;
@@ -233,24 +226,20 @@ Graph create_graph(const GrayImage &gray)
 
     // looping over the matrix to create a node for each pixel
 
-    for(size_t i(0); i < gray.size(); ++i)
-    {
-        for(size_t j(0); j < gray[i].size(); ++j)
-        {
+    for(size_t i(0); i < gray.size(); ++i) {
+
+        for(size_t j(0); j < gray[i].size(); ++j) {
+
           id = i*(gray[i].size()) + j;
 
           // for the pixels that are on the last row, we give them the same successor (i.e. the last node)
-          if(i == gray.size() - 1)
-          {
+          if(i == gray.size() - 1) {
             node.successors.push_back(gray.size()*gray[0].size() + 1);
-          }
-          else
-          {
+          } else {
             successors = find_successors(gray, id);
-            for(size_t k(0); k < 3; ++k)
-            {
-              if((successors[k] >= (i+1)*gray[0].size()) and (successors[k] <= (i+2)*gray[0].size() - 1))
-              {
+            for(size_t k(0); k < 3; ++k) {
+
+              if((successors[k] >= (i+1)*gray[0].size()) and (successors[k] <= (i+2)*gray[0].size() - 1)) {
                 (node.successors).push_back(successors[k]);
               }
             }
@@ -265,8 +254,7 @@ Graph create_graph(const GrayImage &gray)
     }
 
     // initilizing and adding starting node. Its successors are all the pixels of the first line
-    for(size_t i(0); i < gray[0].size(); ++i)
-    {
+    for(size_t i(0); i < gray[0].size(); ++i) {
       node.successors.push_back(i);
     }
     node.costs = 0;
@@ -291,15 +279,14 @@ Path shortest_path(Graph &graph, ID from, ID to)
   // Implementing Dijkstra's algorithm to find the best predecessor for each node
 
   graph[from].distance_to_target = graph[from].costs;
-  while(modified)
-  {
+  while(modified) {
+
     modified = false;
-    for(size_t i(0); i < graph.size(); ++i)
-    {
-      for(size_t j(0); j < (graph[i].successors).size(); ++j)
-      {
-        if(graph[graph[i].successors[j]].distance_to_target > graph[i].distance_to_target + graph[graph[i].successors[j]].costs)
-        {
+    for(size_t i(0); i < graph.size(); ++i) {
+
+      for(size_t j(0); j < (graph[i].successors).size(); ++j) {
+
+        if(graph[graph[i].successors[j]].distance_to_target > graph[i].distance_to_target + graph[graph[i].successors[j]].costs) {
           graph[graph[i].successors[j]].distance_to_target = graph[i].distance_to_target + graph[graph[i].successors[j]].costs;
           graph[graph[i].successors[j]].predecessor_to_target = i;
           modified = true;
@@ -322,10 +309,10 @@ Path find_seam(const GrayImage &gray)
   ID from(graph.size()-2), to(graph.size()-1);
   Path path(shortest_path(graph, from, to));
   Path seam;
-  for(size_t i(0); i < path.size(); ++i)
-  {
-    for(size_t j(0); j < height; ++j)
-    {
+  for(size_t i(0); i < path.size(); ++i) {
+
+    for(size_t j(0); j < height; ++j) {
+
       if((path[i] >= j*width && (path[i] <= ((j+1)*width - 1))))
         seam.push_back(path[i] - j*width);
     }
@@ -383,3 +370,31 @@ RGBImage remove_seam(const RGBImage &image, const Path &seam)
     }
     return result;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// end

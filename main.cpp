@@ -14,6 +14,7 @@
 #include "helper.h"
 #include "seam.h"
 #include "unit_test.h"
+#include "extension.h"
 
 void test_to_gray(std::string const& in_path);
 void test_smooth(std::string const& in_path);
@@ -26,7 +27,7 @@ int main(int argc, char **argv)
     // run_unit_tests();
 
     // Initialize with a default value
-    std::string in_path = "img/americascup.jpg";
+    std::string in_path = "img/palm_tree.jpg";
     std::string out_path = "test.png";
     if (argc > 1 && argc <= 3) {
         // Change it if the user defined a image path
@@ -41,9 +42,9 @@ int main(int argc, char **argv)
     // test_to_gray(in_path);
     // test_smooth(in_path);
     // test_sobel(in_path);
-    // int num_seam(10); /* high value will slow things down */
-    // test_hightlight_seam(in_path, num_seam);
-    // test_remove_seam(in_path, num_seam);
+    int num_seam(10); /* high value will slow things down */
+    test_hightlight_seam(in_path, num_seam);
+    test_remove_seam(in_path, num_seam);
 
     return 0;
 }

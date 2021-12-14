@@ -64,11 +64,10 @@
 void test_sharpen(std::string const& in_path)
 {
     RGBImage image(read_image(in_path));
-    if(!image.empty())
-    {
+    if(!image.empty()) {
         GrayImage gray_image(to_gray(image));
         GrayImage sharpened_image(sharpen(gray_image));
-        write_image(to_RGB(sharpened_image), "outputs/test_sharpen.png");
+        write_image(to_RGB(sharpened_image), "test_sharpen.png");
     }
 }
 
@@ -76,12 +75,11 @@ void test_sharpen(std::string const& in_path)
 void test_smooth_to_sobel(std::string const& in_path)
 {
   RGBImage image(read_image(in_path));
-  if(!image.empty())
-  {
+  if(!image.empty()) {
     GrayImage gray_image(to_gray(image));
     GrayImage smooth_image(smooth(gray_image));
     GrayImage sobeled_image(sobel(smooth_image));
-    write_image(to_RGB(sobeled_image), "outputs/test_smooth_sobel.png");
+    write_image(to_RGB(sobeled_image), "test_smooth_sobel.png");
   }
 }
 
@@ -89,11 +87,10 @@ void test_smooth_to_sobel(std::string const& in_path)
 void test_sobelX(std::string const& in_path)
 {
     RGBImage image(read_image(in_path));
-    if (!image.empty())
-    {
+    if (!image.empty()) {
         GrayImage gray_image(to_gray(image));
         GrayImage sobelXed(sobelX(gray_image));
-        write_image(to_RGB(sobelXed), "outputs/test_sobelX.png");
+        write_image(to_RGB(sobelXed), "test_sobelX.png");
     }
 }
 
@@ -101,28 +98,24 @@ void test_sobelX(std::string const& in_path)
 void test_sobelY(std::string const& in_path)
 {
     RGBImage image(read_image(in_path));
-    if (!image.empty())
-    {
+    if (!image.empty()) {
         GrayImage gray_image(to_gray(image));
         GrayImage sobelYed(sobelY(gray_image));
-        write_image(to_RGB(sobelYed), "outputs/test_sobelY.png");
+        write_image(to_RGB(sobelYed), "test_sobelY.png");
     }
 }
 
 // functions that takes in two images and compares each pixel to verify that the two are identical
 void test_equality(std::string const& path1, std::string const& path2)
 {
-  if(image_equality_checker(path1, path2))
-  {
+  if(image_equality_checker(path1, path2)) {
     std::cout << "The two images are identical! Pixel by pixel!" << std::endl;
-  }
-  else
-  {
+  } else {
     std::cout << "Sorry, there seems to be some difference between the two." << std::endl;
   }
 }
 
-// finding successors for each node in the graph
+// Finding successors for each node in the graph
 Successors find_successors(const GrayImage &gray, const size_t &id)
 {
     Successors successors;
@@ -135,12 +128,102 @@ Successors find_successors(const GrayImage &gray, const size_t &id)
 // Recursive functions that composes the graph from a stanrting and an ending node in a graph
 void find_path(const Graph& graph, const ID& from, const ID& to, Path& path)
 {
-  if(from != graph[to].predecessor_to_target)
-  {
+  if(from != graph[to].predecessor_to_target) {
     path.insert(path.begin(), graph[to].predecessor_to_target);
     find_path(graph, from, graph[to].predecessor_to_target, path);
   }
 }
+
+// *****************
+// |  GO FURTHER!  |
+// *****************
+
+// Function that takes as input a gray image and rotates it
+// in order to then create the relative graph and find path and find horizontal seams
+GrayImage flip_gray_image(const GrayImage& gray)
+{
+  GrayImage flipped;
+  for(size_t column(0); column < gray[0].size(); ++column) {
+
+    flipped.push_back(std::vector<double> (0));
+    for(size_t row(0); row < gray.size(); ++row) {
+
+      flipped[column].push_back(gray[row][column]);
+    }
+  }
+  return flipped;
+}
+
+// Function that takes as input an RGB image and rotates it by 90 degrees
+RGBImage flip_RGB_image(const RGBImage& image)
+{
+  RGBImage flipped;
+  for(size_t column(0); column < image[0].size(); ++column) {
+
+    flipped.push_back(std::vector<int> (0));
+    for(size_t row(0); row < image.size(); ++row) {
+
+      flipped[column].push_back(image[row][column]);
+    }
+  }
+  return flipped;
+}
+
+// Just calling create graph with flipped ("rotated") image
+Graph create_graph_flipped(const GrayImage &gray)
+{
+    return create_graph(flip_gray_image(gray));
+}
+
+void find_best_predecessors(Graph &graph)
+{
+  Path path;
+  bool modified(true);
+  graph[from].distance_to_target = graph[from].costs;
+  while(modified) {
+
+    modified = false;
+    for(size_t i(0); i < graph.size(); ++i) {
+
+      for(size_t j(0); j < (graph[i].successors).size(); ++j) {
+
+        if(graph[graph[i].successors[j]].distance_to_target > graph[i].distance_to_target + graph[graph[i].successors[j]].costs) {
+          graph[graph[i].successors[j]].distance_to_target = graph[i].distance_to_target + graph[graph[i].successors[j]].costs;
+          graph[graph[i].successors[j]].predecessor_to_target = i;
+          modified = true;
+        }
+      }
+    }
+  }
+}
+
+void resize_image(const std::string& path, const size_t& resizing_factor)
+{
+    RGBImage image(read_image(path));
+    RGBImage rotated_image(flip_RGB_image(image));
+
+    Paths paths, rotated_paths;
+    Seams seams, rotated_seams;
+
+
+    if (!image.empty()) {
+        GrayImage gray(to_gray(image));
+        GrayImage rotated_gray(to_gray(rotated_image));
+        Graph graph(create_graph(gray));
+        Graph rotated_graph(create_graph(rotated_gray));
+        find_best_predecessors(graph);
+        find_best_predecessors(rotated_graph);
+        for (size_t i(0); i < resizing_factor; ++i) {
+            paths.push_back(std::vector<ID> (0));
+            find_path(graph, (graph.size() - 2), (graph.size() - 1), paths[i]);
+            // to continue...
+        }
+    }
+}
+
+
+
+
 
 
 
