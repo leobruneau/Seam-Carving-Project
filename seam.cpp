@@ -135,7 +135,7 @@ GrayImage filter(const GrayImage &gray, const Kernel &kernel)
         return filtered;
     } else {
         std::cerr << "ERROR - The size of the kernel can't be accepted!" << std::endl;
-        return;
+        return {};
     }
 }
 
@@ -205,17 +205,6 @@ GrayImage sobel(const GrayImage &gray)
       }
     }
     return sobeled;
-}
-
-// Added function implementing a particular kernel that increases constrast on the image
-GrayImage sharpen(const GrayImage &gray)
-{
-    GrayImage sharpened;
-    Kernel ker { { 0,-1,  0},
-                 {-1, 5, -1},
-                 { 0,-1,  0} };
-    sharpened = filter(gray, ker);
-    return sharpened;
 }
 
 // ************************************

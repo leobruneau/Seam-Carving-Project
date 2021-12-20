@@ -60,6 +60,17 @@
 //     return bin;
 // }
 
+// Added function implementing a particular kernel that increases constrast on the image
+GrayImage sharpen(const GrayImage &gray)
+{
+    GrayImage sharpened;
+    Kernel ker { { 0,-1,  0},
+                 {-1, 5, -1},
+                 { 0,-1,  0} };
+    sharpened = filter(gray, ker);
+    return sharpened;
+}
+
 // Function that implements a different kernel that increases image contrast
 void test_sharpen(std::string const& in_path)
 {
