@@ -111,27 +111,32 @@ void clamp(long &val, long max)
 // Convolve a single-channel image with the given kernel.
 GrayImage filter(const GrayImage &gray, const Kernel &kernel)
 {
-    double average_pixel(.0);
-    long val_k(0), val_l(0);
-    GrayImage filtered;
-    for(size_t i(0); i < gray.size(); ++i) {
+    if (kernel.size()%2 == 0) { // checking if the the dimensions of the kernel are acceptable
+        double average_pixel(.0);
+        long val_k(0), val_l(0);
+        GrayImage filtered;
+        for(size_t i(0); i < gray.size(); ++i) {
 
-        filtered.push_back(std::vector<double> (0));
-        for(size_t j(0); j < gray[i].size(); ++j) {
+            filtered.push_back(std::vector<double> (0));
+            for(size_t j(0); j < gray[i].size(); ++j) {
 
-            for(size_t k(0); k < kernel.size(); ++k) {
+                for(size_t k(0); k < kernel.size(); ++k) {
 
-                for(size_t l(0); l < kernel[k].size(); ++l) {
-                    val_k = i - 1 + k; clamp(val_k, gray.size()-1);
-                    val_l = j - 1 + l; clamp(val_l, gray[i].size()-1);
-                    average_pixel += kernel[k][l]*gray[val_k][val_l];
+                    for(size_t l(0); l < kernel[k].size(); ++l) {
+                        val_k = i - 1 + k; clamp(val_k, gray.size()-1);
+                        val_l = j - 1 + l; clamp(val_l, gray[i].size()-1);
+                        average_pixel += kernel[k][l]*gray[val_k][val_l];
+                    }
                 }
+                filtered[i].push_back(average_pixel);
+                average_pixel = 0.0;
             }
-            filtered[i].push_back(average_pixel);
-            average_pixel = 0.0;
         }
+        return filtered;
+    } else {
+        std::cerr << "ERROR - The size of the kernel can't be accepted!" << std::endl;
+        return;
     }
-    return filtered;
 }
 
 // Smooth a single-channel image
@@ -310,9 +315,7 @@ Path find_seam(const GrayImage &gray)
   Path path(shortest_path(graph, from, to));
   Path seam;
   for(size_t i(0); i < path.size(); ++i) {
-
     for(size_t j(0); j < height; ++j) {
-
       if((path[i] >= j*width && (path[i] <= ((j+1)*width - 1))))
         seam.push_back(path[i] - j*width);
     }

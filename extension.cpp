@@ -144,10 +144,8 @@ GrayImage flip_gray_image(const GrayImage& gray)
 {
   GrayImage flipped;
   for(size_t column(0); column < gray[0].size(); ++column) {
-
     flipped.push_back(std::vector<double> (0));
     for(size_t row(0); row < gray.size(); ++row) {
-
       flipped[column].push_back(gray[row][column]);
     }
   }
@@ -159,10 +157,8 @@ RGBImage flip_RGB_image(const RGBImage& image)
 {
   RGBImage flipped;
   for(size_t column(0); column < image[0].size(); ++column) {
-
     flipped.push_back(std::vector<int> (0));
     for(size_t row(0); row < image.size(); ++row) {
-
       flipped[column].push_back(image[row][column]);
     }
   }
@@ -175,51 +171,72 @@ Graph create_graph_flipped(const GrayImage &gray)
     return create_graph(flip_gray_image(gray));
 }
 
-void find_best_predecessors(Graph &graph)
+// Find and highlight vertical and horizontal seams
+void find_all_seams(const std::string& in_path, const int& num)
 {
-  Path path;
-  bool modified(true);
-  graph[from].distance_to_target = graph[from].costs;
-  while(modified) {
+    RGBImage image(read_image(in_path));
+    RGBImage flipped(flip_RGB_image(image));
 
-    modified = false;
-    for(size_t i(0); i < graph.size(); ++i) {
-
-      for(size_t j(0); j < (graph[i].successors).size(); ++j) {
-
-        if(graph[graph[i].successors[j]].distance_to_target > graph[i].distance_to_target + graph[graph[i].successors[j]].costs) {
-          graph[graph[i].successors[j]].distance_to_target = graph[i].distance_to_target + graph[graph[i].successors[j]].costs;
-          graph[graph[i].successors[j]].predecessor_to_target = i;
-          modified = true;
-        }
-      }
-    }
-  }
-}
-
-void resize_image(const std::string& path, const size_t& resizing_factor)
-{
-    RGBImage image(read_image(path));
-    RGBImage rotated_image(flip_RGB_image(image));
-
-    Paths paths, rotated_paths;
-    Seams seams, rotated_seams;
-
-
+    GrayImage vertical_gray(to_gray(image));
     if (!image.empty()) {
-        GrayImage gray(to_gray(image));
-        GrayImage rotated_gray(to_gray(rotated_image));
-        Graph graph(create_graph(gray));
-        Graph rotated_graph(create_graph(rotated_gray));
-        find_best_predecessors(graph);
-        find_best_predecessors(rotated_graph);
-        for (size_t i(0); i < resizing_factor; ++i) {
-            paths.push_back(std::vector<ID> (0));
-            find_path(graph, (graph.size() - 2), (graph.size() - 1), paths[i]);
-            // to continue...
+        for (int i(0); i < num; ++i) {
+            GrayImage vertical_sobeled(sobel(smooth(vertical_gray)));
+            Path vertical_seam = find_seam(vertical_sobeled);
+            vertical_gray = highlight_seam(vertical_gray, vertical_seam);
         }
     }
+
+    GrayImage horizontal_gray(to_gray(flipped));
+    if (!flipped.empty()) {
+        for(int i(0); i < num; ++i) {
+            GrayImage horizontal_sobeled(sobel(smooth(horizontal_gray)));
+            Path horizontal_seam = find_seam(horizontal_sobeled);
+            horizontal_gray = highlight_seam(horizontal_gray, horizontal_seam);
+        }
+    }
+
+    horizontal_gray = flip_gray_image(horizontal_gray);
+    GrayImage seamed_image(to_gray(image));
+    if(vertical_gray.size() == horizontal_gray.size() && vertical_gray[0].size() == horizontal_gray[0].size()) {
+        for(size_t i(0); i < vertical_gray.size(); ++i) {
+            for(size_t j(0); j < vertical_gray[i].size(); ++j) {
+                if(vertical_gray[i][j] == 0 ||  horizontal_gray[i][j] == 0) {
+                    seamed_image[i][j] = 0;
+                }
+            }
+        }
+    }
+    write_image(to_RGB(seamed_image), "outputs/highlighted_seams.png");
 }
+
+// Find and remove horizontal and vertical seams
+void resize_image(const std::string& in_path, const int& num)
+{
+    RGBImage image(read_image(in_path));
+
+    GrayImage step1(to_gray(image));
+    if (!image.empty()) {
+        for (int i(0); i < num; ++i) {
+            GrayImage vertical_gray(to_gray(image));
+            GrayImage vertical_sobeled(sobel(smooth(vertical_gray)));
+            Path vertical_seam = find_seam(vertical_sobeled);
+            image = remove_seam(image, vertical_seam);
+        }
+    }
+
+    RGBImage flipped(flip_RGB_image(image));
+    if (!image.empty()) {
+        for(int i(0); i < num; ++i) {
+            GrayImage horizontal_gray(to_gray(flipped));
+            GrayImage horizontal_sobeled(sobel(smooth(horizontal_gray)));
+            Path horizontal_seam = find_seam(horizontal_sobeled);
+            flipped = remove_seam(flipped, horizontal_seam);
+        }
+    }
+
+    write_image(flip_RGB_image(flipped), "outputs/removed_seams.png");
+}
+
 
 
 

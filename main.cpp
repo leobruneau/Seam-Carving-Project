@@ -38,13 +38,16 @@ int main(int argc, char **argv)
         return -1;
     }
 
+    find_all_seams(in_path, 7);
+    resize_image(in_path, 7);
+
     // // Uncomment for testing different phases:
     // test_to_gray(in_path);
     // test_smooth(in_path);
     // test_sobel(in_path);
-    int num_seam(10); /* high value will slow things down */
-    test_hightlight_seam(in_path, num_seam);
-    test_remove_seam(in_path, num_seam);
+    // int num_seam(10); /* high value will slow things down */
+    // test_hightlight_seam(in_path, num_seam);
+    // test_remove_seam(in_path, num_seam);
 
     return 0;
 }

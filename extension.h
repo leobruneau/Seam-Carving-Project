@@ -32,5 +32,24 @@ GrayImage flip_gray_image(const GrayImage& gray);
 RGBImage flip_RGB_image(const RGBImage& image);
 void test_to_gray_flipped(std::string const& in_path);
 Graph create_graph_flipped(const GrayImage &gray);
-void resize_image(const std::string& path, const size_t& resizing_factor);
-void find_best_predecessors(Graph &graph);
+void find_all_seams(const std::string& in_path, const int& num);
+void resize_image(const std::string& in_path, const int& num);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// end
