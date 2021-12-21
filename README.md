@@ -15,7 +15,11 @@ one we found and removed the vertical seams on the original image and then, in t
 and applied the same process again to find and remove horizontal seams. Finally we flipped again the image to restore its former
 orientation.
 
-
+In the extension.cpp file we added also some function which were meant for testing, for example a function that outputs the
+resulting image after applying only the sobelX or sobelY filter to it. Furthermore we added some functions to test different kernels
+such as the Gaussian blurring 5x5 kernel or one that is supposed to sharpen the edges of the image, adding contrast.
+Finally we also wrote a function to check if two images are equal pixel by pixel in order to confront our outputs to the
+expected ones that were given in the .zip file.
 
 In the files extension.cpp and extension.h you will find quite some code that has been commented out. This is because, not satisfied
 with the efficiency of our program, we tried to work out a better (faster) solution but didn't have enough time to obtain any

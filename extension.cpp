@@ -177,7 +177,7 @@ void test_equality(std::string const& path1, std::string const& path2)
   }
 }
 
-// Finding successors for each node in the graph
+// Finding successors for one node in the graph
 Successors find_successors(const GrayImage &gray, const size_t &id)
 {
     Successors successors;
@@ -187,7 +187,7 @@ Successors find_successors(const GrayImage &gray, const size_t &id)
     return successors;
 }
 
-// Recursive functions that composes the graph from a stanrting and an ending node in a graph
+// Recursive function that finds the path from a starting to an ending node in a graph
 void find_path(const Graph& graph, const ID& from, const ID& to, Path& path)
 {
   if(from != graph[to].predecessor_to_target) {
