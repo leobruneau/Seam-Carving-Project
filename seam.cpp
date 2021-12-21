@@ -14,7 +14,8 @@ constexpr double INF(std::numeric_limits<double>::max());
 // ***********************************
 
 // Returns red component (in the scale 0.0-1.0) from given RGB color.
-double get_red(int rgb) {
+double get_red(int rgb)
+{
     double red_component(.0);
     int r = rgb >> 16;
     r = r & 0b11111111;
@@ -23,7 +24,8 @@ double get_red(int rgb) {
 }
 
 // Returns green component (in the scale 0.0-1.0) from given RGB color.
-double get_green(int rgb) {
+double get_green(int rgb)
+{
     double green_component(.0);
     int g = rgb >> 8;
     g = g & 0b11111111;
@@ -32,7 +34,8 @@ double get_green(int rgb) {
 }
 
 // Returns blue component (in the scale 0.0-1.0) from given RGB color.
-double get_blue(int rgb) {
+double get_blue(int rgb)
+{
    double blue_component(.0);
     int b(rgb);
     b = b & 0b11111111;
@@ -41,14 +44,16 @@ double get_blue(int rgb) {
 }
 
 // Returns the average of red, green and blue components from given RGB color. (Scale: 0.0-1.0)
-double get_gray(int rgb) {
+double get_gray(int rgb)
+{
     double grey_component(.0);
     grey_component = (get_red(rgb) + get_green(rgb) + get_blue(rgb))/3;
     return grey_component;
 }
 
 // Returns the RGB value of the given red, green and blue components.
-int get_RGB(double red, double green, double blue) {
+int get_RGB(double red, double green, double blue)
+{
     int r(red*255), g(green*255), b(blue*255);
     int rgb(0b00000000);
     rgb = (rgb << 8) + r;
@@ -58,14 +63,16 @@ int get_RGB(double red, double green, double blue) {
 }
 
 // Returns the RGB components from given grayscale value (between 0.0 and 1.0).
-int get_RGB(double gray) {
+int get_RGB(double gray)
+{
     int rgb;
     rgb = get_RGB(gray, gray, gray);
     return rgb;
 }
 
 // Converts  RGB image to grayscale double image.
-GrayImage to_gray(const RGBImage &cimage) {
+GrayImage to_gray(const RGBImage &cimage)
+{
     GrayImage gimage;
     for(size_t i(0); i < cimage.size(); ++i) {
       gimage.push_back(std::vector<double> (0));
@@ -77,7 +84,8 @@ GrayImage to_gray(const RGBImage &cimage) {
 }
 
 // Converts grayscale double image to an RGB image.
-RGBImage to_RGB(const GrayImage &gimage) {
+RGBImage to_RGB(const GrayImage &gimage)
+{
     RGBImage cimage;
     for(size_t i(0); i < gimage.size(); ++i) {
       cimage.push_back(std::vector<int> (0));
@@ -94,35 +102,46 @@ RGBImage to_RGB(const GrayImage &gimage) {
 
 // Get a pixel without accessing out of bounds
 // return nearest valid pixel color
-void clamp(long &val, long max) {
+void clamp(long &val, long max)
+{
   if(val < 0) val = 0;
   if(val >= max) val = max;
 }
 
 // Convolve a single-channel image with the given kernel.
-GrayImage filter(const GrayImage &gray, const Kernel &kernel) {
-    double average_pixel(.0);
-    long val_k(0), val_l(0);
-    GrayImage filtered;
-    for(size_t i(0); i < gray.size(); ++i) {
-        filtered.push_back(std::vector<double> (0));
-        for(size_t j(0); j < gray[i].size(); ++j) {
-            for(size_t k(0); k < kernel.size(); ++k) {
-                for(size_t l(0); l < kernel[k].size(); ++l) {
-                    val_k = i - 1 + k; clamp(val_k, gray.size()-1);
-                    val_l = j - 1 + l; clamp(val_l, gray[i].size()-1);
-                    average_pixel += kernel[k][l]*gray[val_k][val_l];
+GrayImage filter(const GrayImage &gray, const Kernel &kernel)
+{
+    if (kernel.size()%2 != 0) { // checking if the the dimensions of the kernel are acceptable
+        double average_pixel(.0);
+        long val_k(0), val_l(0);
+        GrayImage filtered;
+        for(size_t i(0); i < gray.size(); ++i) {
+
+            filtered.push_back(std::vector<double> (0));
+            for(size_t j(0); j < gray[i].size(); ++j) {
+
+                for(size_t k(0); k < kernel.size(); ++k) {
+
+                    for(size_t l(0); l < kernel[k].size(); ++l) {
+                        val_k = i - 1 + k; clamp(val_k, gray.size()-1);
+                        val_l = j - 1 + l; clamp(val_l, gray[i].size()-1);
+                        average_pixel += kernel[k][l]*gray[val_k][val_l];
+                    }
                 }
+                filtered[i].push_back(average_pixel);
+                average_pixel = 0.0;
             }
-            filtered[i].push_back(average_pixel);
-            average_pixel = 0.0;
         }
+        return filtered;
+    } else {
+        std::cerr << "ERROR - The size of the kernel can't be accepted!" << std::endl;
+        return {};
     }
-    return filtered;
 }
 
 // Smooth a single-channel image
-GrayImage smooth(const GrayImage &gray) {
+GrayImage smooth(const GrayImage &gray)
+{
     GrayImage smoothed;
     Kernel ker { {0.1,0.1,0.1},
                  {0.1,0.2,0.1},
@@ -131,18 +150,9 @@ GrayImage smooth(const GrayImage &gray) {
     return smoothed;
 }
 
-// Smooth function implementing a slightly different kernel
-GrayImage smooth2(const GrayImage &gray) {
-  GrayImage smoothed;
-  Kernel ker { {0.0625, 0.125, 0.0625},
-               {0.125,  0.25,  0.125 },
-               {0.0625, 0.125, 0.0625}};
-  smoothed = filter(gray, ker);
-  return smoothed;
-}
-
 // Compute horizontal Sobel filter
-GrayImage sobelX(const GrayImage &gray) {
+GrayImage sobelX(const GrayImage &gray)
+{
     GrayImage sobelXed;
     Kernel ker { {-1, 0, 1},
                  {-2, 0, 2},
@@ -152,7 +162,8 @@ GrayImage sobelX(const GrayImage &gray) {
 }
 
 // Compute vertical Sobel filter
-GrayImage sobelY(const GrayImage &gray) {
+GrayImage sobelY(const GrayImage &gray)
+{
     GrayImage sobelYed;
     Kernel ker { {-1, -2, -1},
                  { 0,  0,  0},
@@ -162,7 +173,8 @@ GrayImage sobelY(const GrayImage &gray) {
 }
 
 // Compute the magnitude of combined Sobel filters
-GrayImage sobel(const GrayImage &gray) {
+GrayImage sobel(const GrayImage &gray)
+{
     GrayImage sobeled, sobelXed, sobelYed;
     double sobel_pixel(.0);
     Kernel kerY { {-1, -2, -1},
@@ -184,20 +196,12 @@ GrayImage sobel(const GrayImage &gray) {
     return sobeled;
 }
 
-GrayImage sharpen(const GrayImage &gray) {
-    GrayImage sharpened;
-    Kernel ker { { 0,-1,  0},
-                 {-1, 5, -1},
-                 { 0,-1,  0} };
-    sharpened = filter(gray, ker);
-    return sharpened;
-}
-
 // ************************************
 // TASK 3: SEAM
 // ************************************
 
-Graph create_graph(const GrayImage &gray) {
+Graph create_graph(const GrayImage &gray)
+{
     Graph graph;
     Node node;
     ID id;
@@ -206,7 +210,9 @@ Graph create_graph(const GrayImage &gray) {
     // looping over the matrix to create a node for each pixel
 
     for(size_t i(0); i < gray.size(); ++i) {
+
         for(size_t j(0); j < gray[i].size(); ++j) {
+
           id = i*(gray[i].size()) + j;
 
           // for the pixels that are on the last row, we give them the same successor (i.e. the last node)
@@ -215,6 +221,7 @@ Graph create_graph(const GrayImage &gray) {
           } else {
             successors = find_successors(gray, id);
             for(size_t k(0); k < 3; ++k) {
+
               if((successors[k] >= (i+1)*gray[0].size()) and (successors[k] <= (i+2)*gray[0].size() - 1)) {
                 (node.successors).push_back(successors[k]);
               }
@@ -247,7 +254,8 @@ Graph create_graph(const GrayImage &gray) {
 
 // Return shortest path from Node from to Node to
 // The path does NOT include the from and to Node
-Path shortest_path(Graph &graph, ID from, ID to) {
+Path shortest_path(Graph &graph, ID from, ID to)
+{
   Path path;
   bool modified(true);
 
@@ -255,9 +263,12 @@ Path shortest_path(Graph &graph, ID from, ID to) {
 
   graph[from].distance_to_target = graph[from].costs;
   while(modified) {
+
     modified = false;
     for(size_t i(0); i < graph.size(); ++i) {
+
       for(size_t j(0); j < (graph[i].successors).size(); ++j) {
+
         if(graph[graph[i].successors[j]].distance_to_target > graph[i].distance_to_target + graph[graph[i].successors[j]].costs) {
           graph[graph[i].successors[j]].distance_to_target = graph[i].distance_to_target + graph[graph[i].successors[j]].costs;
           graph[graph[i].successors[j]].predecessor_to_target = i;
@@ -274,7 +285,8 @@ Path shortest_path(Graph &graph, ID from, ID to) {
 
 // Final function that creates the graph, finds the shortest path and finally creates the seam by
 // calculating the x coordinates of each node in the path
-Path find_seam(const GrayImage &gray) {
+Path find_seam(const GrayImage &gray)
+{
   unsigned int width(gray[0].size()), height(gray.size());
   Graph graph(create_graph(gray));
   ID from(graph.size()-2), to(graph.size()-1);
@@ -339,3 +351,31 @@ RGBImage remove_seam(const RGBImage &image, const Path &seam)
     }
     return result;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// end

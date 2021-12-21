@@ -533,22 +533,22 @@ void test_find_seam_1()
 
 void run_unit_tests()
 {
-    // test_color();
-    // test_to_gray_2_2();
-    // test_to_gray_3_3();
-    // test_to_gray_4_4();
-    // test_to_gray_5_5();
-    // test_sobelX_1();
-    // test_sobelX_2();
-    // test_sobelX_3();
-    // test_sobelY_1();
-    // test_sobelY_2();
-    // test_sobelY_3();
-    // test_sobel_1();
-    // test_smooth_1();
-    // test_create_graph_1();
-    // test_create_graph_2();
-    test_shortest_path_1();
-    test_shortest_path_2();
-    test_find_seam_1();
+    test_color();
+    test_to_gray_2_2();
+    test_to_gray_3_3();
+    test_to_gray_4_4();
+    test_to_gray_5_5();
+    //test_sobelX_1();
+    //test_sobelX_2();
+    //test_sobelX_3();
+    //test_sobelY_1();
+    //test_sobelY_2();
+    //test_sobelY_3();
+    //test_sobel_1();
+    //test_smooth_1();
+    //test_create_graph_1();
+    //test_create_graph_2();
+    //test_shortest_path_1();
+    //test_shortest_path_2();
+    //test_find_seam_1();
 }
