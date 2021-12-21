@@ -111,7 +111,7 @@ void clamp(long &val, long max)
 // Convolve a single-channel image with the given kernel.
 GrayImage filter(const GrayImage &gray, const Kernel &kernel)
 {
-    if (kernel.size()%2 == 0) { // checking if the the dimensions of the kernel are acceptable
+    if (kernel.size()%2 != 0) { // checking if the the dimensions of the kernel are acceptable
         double average_pixel(.0);
         long val_k(0), val_l(0);
         GrayImage filtered;
@@ -148,17 +148,6 @@ GrayImage smooth(const GrayImage &gray)
                  {0.1,0.1,0.1} };
     smoothed = filter(gray, ker);
     return smoothed;
-}
-
-// Smooth function implementing a slightly different kernel
-GrayImage smooth2(const GrayImage &gray)
-{
-  GrayImage smoothed;
-  Kernel ker { {0.0625, 0.125, 0.0625},
-               {0.125,  0.25,  0.125 },
-               {0.0625, 0.125, 0.0625} };
-  smoothed = filter(gray, ker);
-  return smoothed;
 }
 
 // Compute horizontal Sobel filter
