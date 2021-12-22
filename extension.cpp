@@ -319,7 +319,8 @@ void resize_image(const std::string& in_path, const int& num)
 //         write_image(to_RGB(gray_highlighted), "outputs/gray_highlighted_optimized.png");
 //     }
 // }
-
+//
+// // Function to create a bi-dimensional graph instead of a vector of nodes
 // MatrixGraph CreateGraph(const GrayImage& sobeled)
 // {
 //     MatrixGraph graph;
@@ -339,6 +340,7 @@ void resize_image(const std::string& in_path, const int& num)
 //     return graph;
 // }
 //
+// // Really awful implementation of Dijkstra's Algorithm. Attempt to make it faster
 // void Dijkstra(MatrixGraph& graph)
 // {
 //     bool modified(true);
@@ -419,6 +421,7 @@ void resize_image(const std::string& in_path, const int& num)
 //     }
 // }
 //
+// // Function to retrieve the seam (shortest path) from the graph
 // void func3(const MatrixGraph& graph, std::vector<SeamPixel>& seam, const size_t& row, const size_t& column) {
 //     if (row != INF && column != INF) {
 //         SeamPixel node;
@@ -432,6 +435,7 @@ void resize_image(const std::string& in_path, const int& num)
 //     }
 // }
 //
+// // Main function that from a given path creates the image and the relative graph and then finds n seams and removes them
 // void func2(const std::string& in_path, const unsigned int& num) {
 //     RGBImage image(read_image(in_path));
 //     if (!image.empty()) {
